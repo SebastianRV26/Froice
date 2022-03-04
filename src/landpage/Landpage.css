@@ -1,0 +1,63 @@
+.landpage{
+    background-image: url('./../assets/images/landpage.jpg');
+    height: 100vh;
+}
+
+.navbar{
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    height: 120px;
+    align-items: center;
+    position: relative;
+    top: 0;
+}
+
+#navbarLogo{
+    width: 50px;
+    height: 100px;
+    margin-left: 30px;
+}
+
+
+
+.headerLandpage{
+    color: white;
+    font-weight: 400;
+}
+
+.chart{
+    background: transparent;
+    height: 300px;
+    width: 600px;
+    border-radius: 30px;
+    margin-left: 200px;
+    margin-top: 50px;
+    padding: 40px;
+}
+
+.landpage footer{
+    align-items: ce;
+}
+
+footer{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+}
+
+footer p {
+    color: white;
+}
+
+.landPageButtons{
+    position: absolute;
+    right: 30px;
+    border: 2px solid #666ba2;
+    background-color: transparent;
+    width: 200px;
+    height: 60px;
+    border-radius: 30px;
+    color: white;
+    font-size: 18px;
+}
