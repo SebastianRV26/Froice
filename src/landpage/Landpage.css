@@ -61,3 +61,7 @@ footer p {
     color: white;
     font-size: 18px;
 }
+
+.landPageButtons:hover{
+    background-color: #666ba2;
+}
