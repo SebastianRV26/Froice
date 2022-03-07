@@ -1,5 +1,5 @@
 import "./App.css";
-import Landpage from "./landpage/Landpage.component.jsx";
+import Landpage from "./components/Landpage/Landpage.js";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
