@@ -14,7 +14,7 @@ function landpage() {
 
       <div className="chart">
         <h1 className="headerLandpage">
-          Prosteta network
+          Froice network
         </h1>
         <h2 className="headerLandpage">
           In this network you can say any opinion about anything without censoring
