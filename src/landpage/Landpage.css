@@ -22,7 +22,7 @@
 
 
 .headerLandpage{
-    color: white;
+    color: #666ba2;
     font-weight: 400;
 }
 
@@ -47,7 +47,7 @@ footer{
 }
 
 footer p {
-    color: white;
+    color: #666ba2;
 }
 
 .landPageButtons{
@@ -58,10 +58,11 @@ footer p {
     width: 200px;
     height: 60px;
     border-radius: 30px;
-    color: white;
+    color: #666ba2;
     font-size: 18px;
 }
 
 .landPageButtons:hover{
     background-color: #666ba2;
+    color: white;
 }
