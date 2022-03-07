@@ -1,11 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-import Landpage from './landpage/Landpage.component.jsx';
+import "./App.css";
+import Landpage from "./landpage/Landpage.component.jsx";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <Landpage />
+      <Routes>
+        <Route path="/" element={<Landpage />} />
+      </Routes>
     </div>
   );
 }
