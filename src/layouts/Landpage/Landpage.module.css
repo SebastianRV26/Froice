@@ -2,25 +2,6 @@
     background-image: url('../../assets/images/landpage.jpg');
     height: 100vh;
 }
-
-.navbar{
-    background-color: transparent;
-    display: flex;
-    flex-direction: row;
-    height: 120px;
-    align-items: center;
-    position: relative;
-    top: 0;
-}
-
-#navbarLogo{
-    width: 50px;
-    height: 100px;
-    margin-left: 30px;
-}
-
-
-
 .headerLandpage{
     color: #666ba2;
     font-weight: 400;
