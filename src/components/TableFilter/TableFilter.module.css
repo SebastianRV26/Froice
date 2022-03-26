@@ -1,0 +1,29 @@
+.titleContainer {
+  position: relative;
+}
+
+.actionBtn {
+  border-radius: 50% !important;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
+  position: absolute;
+  right: 0px;
+  top: -10px;
+}
+
+.actionBtn i {
+  line-height: 2;
+}
+
+@media screen and (max-width: 800px) {
+  .titleContainer {
+    position: relative;
+  }
+  .actionBtn {
+    position: fixed;
+    top: calc(100% - 80px);
+    right: 20px;
+  }
+}
