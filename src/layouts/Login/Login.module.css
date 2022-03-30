@@ -1,18 +1,109 @@
 .loginContainer{
+  display: flex;
   height: 100vh;
   width: 100vw;
-  padding: 0;
+  padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  background-image: url('../../assets/images/landpage.jpg');
 }
 
-.body{
+
+.loginImage{
+  width: 60vw;
+  height: 100vh;
+  margin-left: 0px;
+  margin-bottom: 0px;
+}
+
+.leftPanel{
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30vw;
+  height: 80vh;
+  margin-top: 10vh;
+  margin-left: 10vw;
+}
+
+.rightPanel{
+  width: 60vw;
+  height: 100vh;
+  
+}
+
+h1{
+  font-weight: 900;
+  color: white;
+}
+
+/*=======================LoginStyles=======================*/
+
+.froiceLogo{
+
+  width:50px;
+  height:100px;
+}
+
+.title{
+  background: #4856df;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100px;
+  vertical-align: center;
   justify-content: center;
   align-items: center;
-  height: 80vh;
-  width: 80vw;
-  margin-left: 10%;
+  border-radius:10px;
+  padding:30px;
 }
 
+.loginForm{
+  display: flex;
+  height: fit-content;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input_form{
+  width: 80%;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.button{
+  background-color: #4856df !important;
+  width: 200px;
+  height: 60px;
+  font-size: 14px;
+}
+
+.button:hover{
+  background-color: white !important;
+  border-color: #4856df !important;
+  color: #4856df !important;
+}
+
+
+
+
+.hl{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  border-radius: 30px;
+  width: 100%;
+}
+
+.icons{
+  width: 12px;
+  height: 12px;
+  margin-right: 10px;
+}
+
+.register_paragraph{
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
