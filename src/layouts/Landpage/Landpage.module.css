@@ -1,9 +1,11 @@
 .landpage{
-    background-image: url('../../assets/images/landpage.jpg');
+    display: flex;
+    flex-direction: column;
     height: 100vh;
 }
+
 .headerLandpage{
-    color: #666ba2;
+    color: #4856df;
     font-weight: 400;
 }
 
@@ -47,3 +49,13 @@ footer p {
     background-color: #666ba2;
     color: white;
 }
+
+.link {
+    font: inherit ;
+    vertical-align: 0rem !important;
+    padding: 0 !important;
+    background: none;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+}
+

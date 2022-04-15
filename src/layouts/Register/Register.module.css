@@ -54,6 +54,7 @@
 .inlineForm{
     display: flex;
     flex-direction: row;
+    vertical-align: middle;
 }
 
 .space{
@@ -82,4 +83,16 @@
     height: 60px;
     font-size: 14px;
     color:white;
+}
+
+.button:hover{
+    background-color: white !important;
+    border-color: #4856df !important;
+    color: #4856df !important;
+}
+  
+  
+.conditionsBox{
+    display: flex;
+    flex-direction: column;
 }

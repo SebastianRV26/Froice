@@ -25,6 +25,24 @@
     
 }
 
+.inputWithPhone{
+    width: 100%;
+    border: none;
+    background: none;
+    line-height: 2.4em;
+    color: #4856df;
+    font-weight: 200;
+    letter-spacing: 0px;
+    letter-spacing: 0.02rem;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+    -webkit-transition: all .2s ease;
+    transition: all .2s ease;
+    padding-left: 70px;
+    margin-right: 22px;
+
+}
+
 .inputWithoutIcon{
     width: 100%;
     border: none;
@@ -71,3 +89,14 @@
 .inputIcon{
     margin: 0 -20px;
 }
+
+.phoneAreaZone{
+    width: 64px;
+    height: 32px;
+    border: none;
+    background: none;
+    border-left: black;
+    margin-right: -64px;
+    z-index: 5;
+}
+
