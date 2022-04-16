@@ -1,16 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import './Theme.min.css';
 import "./index.css";
 import App from "./App";
-import './Theme.min.css';
+
 
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import FirebaseAuthProvider from "./store/auth-context"
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <FirebaseAuthProvider >
+        <App />
+      </FirebaseAuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

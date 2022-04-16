@@ -3,76 +3,43 @@ import classes from './Input.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 
-/*
-export const Input = (props) => {
-
-  let isInputPassword = props.type === 'password' ? true : false;
-  let inputRef = useRef();
-  let [inputValue, setInputValue] = useState(null);
-
-  const seePassword = () => {
-    if (isInputPassword) {
-      if (inputRef.current.type === 'password') {
-        inputRef.current.type = 'text';
-      } else {
-        inputRef.current.type = 'password';
-      }
-    }
-  }
-
-  return (
-    <div className={classes.inputBody}>
-
-
-      {props.faIcon !== undefined ? <FontAwesomeIcon onClick={seePassword} className={classes.inputIcon} icon={props.faIcon} /> : null}
-
-      {props.iconSrc !== undefined ?
-        <img alt=""
-          src={props.iconSrc}
-          width={props.size === null ? 32 : props.size}
-          height={props.size === null ? 32 : props.size}
-        />
-        :
-        null
-      }
-      <input
-        ref={inputRef}
-        className={(props.faIcon !== undefined || props.iconSrc !== undefined) ? classes.input : classes.inputWithoutIcon}
-        text={props.text !== null ? props.text : inputValue}
-        placeholder={props.placeholder !== null ? props.placeholder : null}
-        type={props.type !== null ? props.type : 'text'}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-
-      {props.type === 'password' ? <FontAwesomeIcon onClick={seePassword} className={classes.togglePassword} icon={faEye} /> : <div className={classes.togglePassword} />}
-
-    </div>
-  )
-}
-*/
-
 export const Input = React.forwardRef((props, ref) => {
 
   let isInputPassword = props.type === 'password' ? true : false;
 
+  let getClassName = () =>{
+    switch (props.type) {
+      case "text": 
+        return (props.faIcon !== undefined || props.iconSrc !== undefined) ?  classes.input : classes.inputWithoutIcon;
+      case "phone":
+        return classes.inputWithPhone;
+      default:
+        return (props.faIcon !== undefined || props.iconSrc !== undefined) ?  classes.input : classes.inputWithoutIcon;
+    }
+  }
+
+  let getType = () => { 
+      switch (props.type) {
+        case "text": 
+        return "text"
+      case "phone":
+        return "number"
+      default:
+        return props.type;
+      }
+  }
+
 
   const seePassword = () => {
-
-    if (isInputPassword && ref!==null) {
-      if (ref.current.type === 'password') {
-        ref.current.type = 'text';
-      } else {
-        ref.current.type = 'password';
-      }
-    }else{
-      console.error("No sea caballo pd: Enviar un ref");
+    if (isInputPassword && ref !== null) {
+      ref.current.type === 'password' ? ref.current.type = 'text' : ref.current.type = 'password';
+    } else {
+      console.error("Enviar un ref");
     }
-
   }
 
   return (
     <div className={classes.inputBody}>
-
 
       {props.faIcon !== undefined ? <FontAwesomeIcon onClick={seePassword} className={classes.inputIcon} icon={props.faIcon} /> : null}
 
@@ -85,15 +52,29 @@ export const Input = React.forwardRef((props, ref) => {
         :
         null
       }
+
+      
+      {
+        props.type === 'phone'?
+          <select className={classes.phoneAreaZone}>
+            <option value="+506">+506</option>
+            <option value="+1" >+1</option>
+            <option value="+2">+2</option>
+          </select>
+          :
+          null
+      }
+    
       <input
+        onChange={props.onChange}
         ref={ref}
-        className={(props.faIcon !== undefined || props.iconSrc !== undefined) ? classes.input : classes.inputWithoutIcon}
+        className={getClassName()}
         text={props.text !== null ? props.text : ""}
         placeholder={props.placeholder !== null ? props.placeholder : null}
-        type={props.type !== undefined ? props.type : 'text'}
+        type={getType()}
       />
 
-      {props.type === 'password' ? <FontAwesomeIcon onClick={seePassword} className={classes.togglePassword} icon={faEye} /> : <div className={classes.togglePassword} />}
+      {props.type === 'password' ? <FontAwesomeIcon onClick={seePassword} className={classes.togglePassword} icon={faEye} /> : <div className={classes.togglePasswordDisabled} />}
 
     </div>
   )

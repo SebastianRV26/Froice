@@ -1,0 +1,98 @@
+.registerContainer{
+    display:flex;
+}
+
+.leftPanel{
+    display:flex;
+    flex-direction: column;
+    background: white;
+    width:50vw;
+    height:100vh;
+    
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    vertical-align:center;
+    
+}
+
+.rightPanel{
+    display:flex;
+    background: #E5E5E5;
+    width:50vw;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+}
+
+.title{
+    color:#4856df;
+    width:80%;
+}
+
+
+.title h1{
+    color:#4856df;
+}
+
+.hl{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    border-radius: 30px;
+    width: 100%;
+}
+
+
+.registerForm{
+    margin-top:20px;
+    margin: bottom 20px;
+    width: 50%;
+}
+
+.inlineForm{
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+}
+
+.space{
+    width: 30px;
+}
+
+
+
+.toggleButton:hover{
+    color:white !important;
+}
+
+.btn{
+    background-color:#4856df !important;
+}
+
+
+.btn.outline.success{
+    background-color:#4856df !important;
+}
+
+
+.button{
+    background-color: #4856df !important;
+    width: 200px;
+    height: 60px;
+    font-size: 14px;
+    color:white;
+}
+
+.button:hover{
+    background-color: white !important;
+    border-color: #4856df !important;
+    color: #4856df !important;
+}
+  
+  
+.conditionsBox{
+    display: flex;
+    flex-direction: column;
+}
