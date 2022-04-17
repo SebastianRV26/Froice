@@ -30,9 +30,11 @@ const TableFilter = (props) => {
     <div className="container">
       <div className={classes.titleContainer}>
         <h3 className="text-center my-4">{props.title}</h3>
-        <Button onClick={props.button} className={classes.actionBtn}>
-          <i className="fas fa-plus"></i>
-        </Button>
+        {props.button && (
+          <Button onClick={props.button} className={classes.actionBtn}>
+            <i className="fas fa-plus"></i>
+          </Button>
+        )}
       </div>
       <Form className="row" onSubmit={handleSubmit}>
         <Form.Group className="mb-3 col-md">

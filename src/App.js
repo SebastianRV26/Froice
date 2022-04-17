@@ -1,7 +1,7 @@
 import "./App.css";
 import Landpage from "./layouts/Landpage/Landpage.js";
 import { Route, Routes } from "react-router-dom";
-import Login from "./layouts/login/Login.js";
+import Login from "./layouts/Login/Login.js";
 import AdminView from "./layouts/admin/AdminView";
 import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";

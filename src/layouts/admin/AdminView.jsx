@@ -9,7 +9,7 @@ import { Outlet } from "react-router-dom";
 const AdminPage = () => {
   return (
     <>
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="primary" expand="lg" variant="dark">
         <Container>
           <Navbar.Brand as={Link} to="/admin/users">
             Administrador
