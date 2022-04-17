@@ -17,8 +17,7 @@ const TableComponent = (props) => {
   const nextDisabled = list.length <= pageSize;
 
   const dbCollection = props.collection;
-  const enableModify = props.onModify !== undefined;
-  const enableDelete = props.onDelete !== undefined;
+  const actions = props.actions;
 
   const fetchData = useCallback(
     async (queryOptions = []) => {
@@ -70,20 +69,17 @@ const TableComponent = (props) => {
               : data[colData.key]}
           </td>
         ))}
-        {(enableModify || enableDelete) && (
+        {actions && (
           <td data-label="Accciones">
-            {enableModify && (
+            {actions.map((action) => (
               <Button
-                className={`far fa-edit p-2 icon mx-1 ${classes.btnAction}`}
-                onClick={() => props.onModify(data)}
-              />
-            )}
-            {enableDelete && (
-              <Button
-                className={`far fa-trash-alt p-2 icon ${classes.btnAction}`}
-                onClick={() => props.onDelete(data.id)}
-              />
-            )}
+                key={action.key}
+                className={`${classes.btnAction} p-2 icon mx-1`}
+                onClick={action.actionHandler.bind(null, data)}
+              >
+                <img src={action.icon}></img>
+              </Button>
+            ))}
           </td>
         )}
       </tr>
@@ -103,14 +99,16 @@ const TableComponent = (props) => {
               </Placeholder>
             </td>
           ))}
-          <td data-label="Accciones">
-            {enableModify && (
-              <Placeholder.Button className={classes.btnAction} />
-            )}
-            {enableDelete && (
-              <Placeholder.Button className={classes.btnAction} />
-            )}
-          </td>
+          {actions && (
+            <td data-label="Accciones">
+              {actions.map((action) => (
+                <Placeholder.Button
+                  key={action.key}
+                  className={classes.btnAction}
+                />
+              ))}
+            </td>
+          )}
         </tr>
       );
     }
@@ -136,7 +134,7 @@ const TableComponent = (props) => {
             {props.columns.map((colData) => (
               <th key={colData.key}>{colData.label}</th>
             ))}
-            {(enableModify || enableDelete) && <th>Acciones</th>}
+            {actions && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>

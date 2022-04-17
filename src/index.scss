@@ -12,7 +12,24 @@ code {
     monospace;
 }
 
+.input-icon {
+  position: absolute;
+  z-index: 2;
+  display: block !important;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 1.3rem !important;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.input-spacing {
+  padding-left: 2.2rem !important;
+}
+
 /*! `Custom` Bootstrap 5 theme */
+@import url(https://use.fontawesome.com/releases/v5.0.10/css/all.css);
 
 //$enable-grid-classes:false;
 $primary:#07689F;

@@ -66,8 +66,7 @@ const TableFilter = (props) => {
         columns={props.columns}
         collection={props.collection}
         queryOptions={queryOptions}
-        onModify={props.onModify}
-        onDelete={props.onDelete}
+        actions={props.actions}
       />
     </div>
   );
