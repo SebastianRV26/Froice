@@ -1,10 +1,8 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Login from "./layouts/Login/Login.js";
-import AdminView from "./layouts/admin/AdminView";
+import AdminView from "./layouts/Admin/AdminView";
 import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";
-
 import Landpage from "./layouts/Landpage/Landpage";
 import Login from "./layouts/Login/Login";
 import Register from "./layouts/Register/Register";
