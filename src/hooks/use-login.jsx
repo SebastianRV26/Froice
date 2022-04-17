@@ -1,35 +1,34 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
+import { auth } from "../firebase/firebase.config";
 import { toast } from "react-toastify";
-import { authErrors } from "../utils/errors";
+import { useNavigate } from "react-router-dom";
 
 const useLogin = () => {
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const login = (email, password) => {
     setLoading(true);
     const promise = signInWithEmailAndPassword(auth, email, password);
     toast.promise(promise, {
+      
       pending: {
         render() {
-          return "Enviando petición";
+          return "Sending petition";
         },
       },
       success: {
         render() {
-          return "Inicio de sesión exitoso";
+          navigate(`/`);
+          return "Successful login";
         },
       },
       error: {
         render({ data: error }) {
           setError(error);
           setLoading(false);
-          if (authErrors[error.code]) {
-            return authErrors[error.code];
-          }
-          return "Error al iniciar sesión";
+          return "Login failed";
         },
       },
     });
