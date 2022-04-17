@@ -1,11 +1,13 @@
 import classes from "./Landpage.module.css";
 import NavbarCustom from "../../components/navbar/Navbar";
+import {Navbar} from 'react-bootstrap';
 
 const Landpage = () => {
   return (
     <div className={classes.landpage}>
       
-
+      
+      <Navbar></Navbar>
       <NavbarCustom buttonText='Register/Login'/>
 
       <div className={classes.chart}>

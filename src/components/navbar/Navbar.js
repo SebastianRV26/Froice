@@ -2,7 +2,6 @@ import React from 'react';
 import froiceLogo from "../../assets/icons/froicelogo.png";
 import classes from './Navbar.module.css';
 
-
 const NavbarCustom = (props) => {
     return (
         <nav className={classes.navbar}>
@@ -17,4 +16,9 @@ const NavbarCustom = (props) => {
 }
 
 
+
+
+
 export default NavbarCustom;
+
+
