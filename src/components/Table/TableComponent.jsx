@@ -1,5 +1,5 @@
 import { endAt, getDocs, limit, query, startAt } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import Button from "react-bootstrap/Button";
 import classes from "./TableComponent.module.css";
@@ -33,7 +33,7 @@ const TableComponent = (props) => {
         const querySnapshot = await getDocs(q);
         let items = [];
         querySnapshot.forEach((doc) => {
-          items.push(doc);
+          items.push({ id: doc.id, ...doc.data() });
         });
         setList(items);
       } catch (error) {
@@ -65,15 +65,17 @@ const TableComponent = (props) => {
       <tr key={data.id}>
         {props.columns.map((colData) => (
           <td key={colData.key} data-label={colData.label}>
-            {data.data()[colData.key]}
+            {colData.render
+              ? colData.render(data[colData.key])
+              : data[colData.key]}
           </td>
         ))}
         {(enableModify || enableDelete) && (
           <td data-label="Accciones">
             {enableModify && (
               <Button
-                className={`far fa-edit p-2 icon ${classes.btnAction}`}
-                onClick={() => props.onModify({ id: data.id, ...data.data() })}
+                className={`far fa-edit p-2 icon mx-1 ${classes.btnAction}`}
+                onClick={() => props.onModify(data)}
               />
             )}
             {enableDelete && (

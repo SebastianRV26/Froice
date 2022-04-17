@@ -1,7 +1,8 @@
 import { orderBy, where } from "firebase/firestore";
-import { useState } from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { capitalizeFirstLetter } from "../../utils/utils";
 import TableComponent from "../Table/TableComponent";
 import classes from "./TableFilter.module.css";
 
@@ -19,8 +20,8 @@ const TableFilter = (props) => {
     } else {
       setQueryOptions([
         orderBy(filterType),
-        where(filterType, ">=", filterText),
-        where(filterType, "<=", filterText + "\uf8ff"),
+        where(filterType, ">=", capitalizeFirstLetter(filterText)),
+        where(filterType, "<=", capitalizeFirstLetter(filterText) + "\uf8ff"),
       ]);
     }
   };
