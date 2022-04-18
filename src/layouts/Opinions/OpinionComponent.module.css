@@ -10,13 +10,6 @@
   align-items: center;
 }
 
-.item1 {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
 .item2 {
   margin-left: 10px;
 }
@@ -26,8 +19,7 @@
 }
 
 .time {
-  color: gray;
-  margin-left: 10px;
+  color: gray !important;
   font-size: small;
 }
 

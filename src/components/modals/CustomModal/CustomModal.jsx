@@ -2,6 +2,8 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
 const CustomModal = ({ show, title, onConfirm, onHide, children }) => {
+  const showButtons = onConfirm === undefined;
+
   return (
     <Modal
       show={show}
@@ -15,12 +17,14 @@ const CustomModal = ({ show, title, onConfirm, onHide, children }) => {
         <Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>{children}</Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onConfirm}>Guardar</Button>
-        <Button onClick={onHide} variant="secondary">
-          Cancelar
-        </Button>
-      </Modal.Footer>
+      {!showButtons && (
+        <Modal.Footer>
+          <Button onClick={onConfirm}>Guardar</Button>
+          <Button onClick={onHide} variant="secondary">
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      )}
     </Modal>
   );
 };

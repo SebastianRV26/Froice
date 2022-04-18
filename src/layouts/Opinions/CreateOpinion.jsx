@@ -11,7 +11,7 @@ const CreateOpinion = () => {
     addDoc("opinions", "Opinion", opinion);
   };
 
-  return <NewOpinion onSend={send} message="" />;
+  return <NewOpinion onSend={send} />;
 };
 
 export default CreateOpinion;
