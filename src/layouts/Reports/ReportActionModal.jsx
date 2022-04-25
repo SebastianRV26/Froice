@@ -31,6 +31,7 @@ const ReportActionModal = (props) => {
       `users/${report.reportedId}/reports`,
       "Respuesta",
       {
+        reportedName: report.reportedName,
         reporterName: report.reporterName,
         opinionText: report.opinionText,
         description: report.description,
@@ -65,6 +66,7 @@ const ReportActionModal = (props) => {
       `users/${report.reporterId}/reports`,
       "Respuesta",
       {
+        reporterName: report.reporterName,
         reportedName: report.reportedName,
         opinionText: report.opinionText,
         description: report.description,

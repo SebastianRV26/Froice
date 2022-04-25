@@ -10,6 +10,7 @@ import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirm
 import UnauthenticatedRoute from "./components/Routes/UnauthenticatedRoute";
 import Dashboard from "./layouts/Dashboard/Dashboard";
 import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
+import UsersReports from "./layouts/UserReports/UsersReports";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           element={<UnauthenticatedRoute component={ForgotPassword} />}
         />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/reports" element={<UsersReports />} />
         <Route path="/admin" element={<AdminView />}>
           <Route index element={<Users />} />
           <Route path="users" element={<Users />} />
