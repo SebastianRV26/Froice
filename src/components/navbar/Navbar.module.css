@@ -1,5 +1,5 @@
 .navbar{
-    background-color: transparent;
+    background-color: #4856df;
     display: flex;
     flex-direction: row;
     height: 120px;
@@ -34,4 +34,8 @@
 .navbarButton:hover{
     background-color: #666ba2;
     color: white;
+}
+
+.navbrand{
+    color: white !important;
 }

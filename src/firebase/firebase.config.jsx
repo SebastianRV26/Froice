@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-
+import { useNavigate } from "react-router-dom";
 const firebaseConfig = {
   apiKey: "AIzaSyAJATASBOHWAv-cYPJEgu_AbDm67Mgv1s8",
   authDomain: "quejese-aqui.firebaseapp.com",
@@ -20,7 +20,7 @@ const auth = getAuth(app);
 const functions = getFunctions(app);
 
 // Emulators
-connectFirestoreEmulator(db, "localhost", 8080);
+connectFirestoreEmulator(db, "localhost", 8081);
 connectAuthEmulator(auth, "http://localhost:9099");
 connectFunctionsEmulator(functions, "localhost", 5001);
 
