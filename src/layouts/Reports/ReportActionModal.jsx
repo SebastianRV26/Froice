@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
+import useCreateDocument from "../../hooks/use-create-document";
+import useDelete from "../../hooks/use-delete";
 
 const ReportActionModal = (props) => {
+  const report = props.report;
+
   const [validated, setValidated] = useState(false);
   const [reason, setReason] = useState();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [createHook, loadingCreate] = useCreateDocument();
+  const [deleteHook, loadingDelete] = useDelete();
 
   const title =
     props.actionType === "comment" ? "Eliminar comentario" : "Cancelar reporte";
@@ -18,6 +24,64 @@ const ReportActionModal = (props) => {
       setShowConfirmModal(true);
     }
     setValidated(true);
+  };
+
+  const deleteCommentHandler = () => {
+    const createResponsePromise = createHook(
+      `users/${report.reportedId}/reports`,
+      "Respuesta",
+      {
+        reporterName: report.reporterName,
+        opinionText: report.opinionText,
+        description: report.description,
+        response: reason,
+        status: 1,
+      }
+    );
+    const deleteCommentPromise = deleteHook(
+      "opinions",
+      report.opinionId,
+      "Se eliminó el comentario correctamente",
+      "Error al eliminar el comentario"
+    );
+    const deleteReportPromise = deleteHook(
+      "reports",
+      report.id,
+      "Se eliminó el reporte correctamente",
+      "Error al eliminar el reporte"
+    );
+    Promise.all([
+      createResponsePromise,
+      deleteCommentPromise,
+      deleteReportPromise,
+    ]).then(() => {
+      props.onHide();
+      props.onSuccess();
+    });
+  };
+
+  const cancelReportHandler = () => {
+    const createResponsePromise = createHook(
+      `users/${report.reporterId}/reports`,
+      "Respuesta",
+      {
+        reportedName: report.reportedName,
+        opinionText: report.opinionText,
+        description: report.description,
+        response: reason,
+        status: 0,
+      }
+    );
+    const deleteReportPromise = deleteHook(
+      "reports",
+      report.id,
+      "Se eliminó el reporte correctamente",
+      "Error al eliminar el reporte"
+    );
+    Promise.all([createResponsePromise, deleteReportPromise]).then(() => {
+      props.onHide();
+      props.onSuccess();
+    });
   };
 
   return (
@@ -69,7 +133,11 @@ const ReportActionModal = (props) => {
               ? "eliminar el comentario"
               : "cancelar el reporte"
           }`}
-          //onConfirm={addUser}
+          onConfirm={
+            props.actionType === "comment"
+              ? deleteCommentHandler
+              : cancelReportHandler
+          }
           onHide={() => setShowConfirmModal(false)}
         />
       )}

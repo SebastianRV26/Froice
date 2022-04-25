@@ -1,6 +1,6 @@
 // import classes from "./Reports.module.css";
-import { collection } from "firebase/firestore";
-import { useState } from "react";
+import { addDoc, collection } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import TableFilter from "../../components/TableFilter/TableFilter";
 import { db } from "../../firebase/firebase.config";
 import commentSlash from "../../assets/icons/comment-slash.svg";
@@ -8,8 +8,20 @@ import userSlash from "../../assets/icons/user-slash.svg";
 import windowClose from "../../assets/icons/window-close.svg";
 import ReportActionModal from "./ReportActionModal";
 import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
+import useDelete from "../../hooks/use-delete";
 
 const Reports = () => {
+  /*useEffect(() => {
+    addDoc(collection(db, "reports"), {
+      reportedId: "1",
+      reportedName: "Croqui",
+      reporterId: "2",
+      reporterName: "Jairo",
+      opinionId: "1",
+      opinionText: "Text",
+      description: "No me gustó",
+    });
+  }, []);*/
   const [showReportModal, setShowReportModal] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
   const [report, setReport] = useState();
@@ -17,22 +29,43 @@ const Reports = () => {
   const [reportsCollection, setReportsCollection] = useState(
     collection(db, "reports")
   );
+  const [deleteHook, loading] = useDelete();
 
-  const deleteCommentHandler = (report) => {
+  const deleteCommentDialogHandler = (report) => {
     setReport(report);
     setShowReportModal(true);
     setActionType("comment");
   };
 
-  const banUserHandler = (report) => {
+  const banUserDialogHandler = (report) => {
     setReport(report);
     setShowBanModal(true);
   };
 
-  const cancelReportHandler = (report) => {
+  const cancelReportDialogHandler = (report) => {
     setReport(report);
     setShowReportModal(true);
     setActionType("cancel");
+  };
+
+  const banUserHandler = () => {
+    const deleteUserPromise = deleteHook(
+      "users",
+      report.reportedId,
+      "Se eliminó el usuario correctamente",
+      "Error al eliminar el usuario"
+    );
+    const deleteReportPromise = deleteHook(
+      "reports",
+      report.id,
+      "Se eliminó el reporte correctamente",
+      "Error al eliminar el reporte"
+    );
+    Promise.all([deleteUserPromise, deleteReportPromise]).then(() => {
+      setReport(null);
+      setShowBanModal(false);
+      setReportsCollection(collection(db, "reports"));
+    });
   };
 
   return (
@@ -50,27 +83,29 @@ const Reports = () => {
             key: "userBan",
             label: "Banear usuario",
             icon: userSlash,
-            actionHandler: banUserHandler,
+            actionHandler: banUserDialogHandler,
           },
           {
             key: "deleteComment",
             label: "Eliminar comentario",
             icon: commentSlash,
-            actionHandler: deleteCommentHandler,
+            actionHandler: deleteCommentDialogHandler,
           },
           {
             key: "cancelReport",
             label: "Cancelar reporte",
             icon: windowClose,
-            actionHandler: cancelReportHandler,
+            actionHandler: cancelReportDialogHandler,
           },
         ]}
         collection={reportsCollection}
       />
       {showReportModal && (
         <ReportActionModal
-          onHide={setShowReportModal.bind(this, false)}
           actionType={actionType}
+          report={report}
+          onHide={setShowReportModal.bind(this, false)}
+          onSuccess={setReportsCollection.bind(this, collection(db, "reports"))}
         />
       )}
       {showBanModal && (
@@ -78,9 +113,9 @@ const Reports = () => {
           show={showBanModal}
           title="Banear usuario"
           description="¿Está seguro de que desea banear al usuario?"
-          //onConfirm={deleteUserHandler}
+          onConfirm={banUserHandler}
           onHide={setShowBanModal.bind(this, false)}
-          //loading={loading}
+          loading={loading}
         />
       )}
     </>
