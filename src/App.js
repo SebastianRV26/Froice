@@ -1,19 +1,21 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import AdminView from "./layouts/Admin/AdminView";
+import Users from "./layouts/Users/Users";
+import Reports from "./layouts/Reports/Reports";
 import Landpage from "./layouts/Landpage/Landpage";
-import Login from "./layouts/Login/Login.jsx";
-import Register from "./layouts/Register/Register.jsx";
+import Login from "./layouts/Login/Login";
+import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
 import UnauthenticatedRoute from "./components/Routes/UnauthenticatedRoute";
 import Dashboard from "./layouts/Dashboard/Dashboard";
 import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
 import OpinionsView from "./layouts/Opinions/OpinionsView";
+import UsersReports from "./layouts/UserReports/UsersReports";
 
 function App() {
   return (
     <div className="App">
-      <ToastContainer />
       <Routes>
         <Route
           path="/"
@@ -37,6 +39,15 @@ function App() {
         />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/home" element={<OpinionsView />} />
+        <Route path="/reports" element={<UsersReports />} />
+        <Route path="/admin" element={<AdminView />}>
+          <Route index element={<Users />} />
+          <Route path="users" element={<Users />} />
+          <Route path="reports" element={<Reports />} />
+          {/* <Route path="profile" element={<Login />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="products" element={<Products />} /> */}
+        </Route>
       </Routes>
     </div>
   );
