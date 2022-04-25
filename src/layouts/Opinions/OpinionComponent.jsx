@@ -17,7 +17,7 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 
 const OpinionComponent = ({ element }) => {
-  let { name, time, description } = element;
+  let { name, time, description, likes } = element;
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
@@ -43,16 +43,27 @@ const OpinionComponent = ({ element }) => {
 
   const Comment = () => {};
 
-  const ModifyOpinion = () => {
-    let opinionId = "XDXD";
-    let opinion = {};
-    modifyOpinion(
-      "opinions",
-      opinionId,
-      opinion,
-      "Opinión editada",
-      "Error al editar opinión"
-    );
+  const ModifyOpinion = (newDescription, messageChanged) => {
+    if (messageChanged) {
+      let opinionId = "XDXD";
+      let opinion = {
+        name,
+        time,
+        likes,
+        opinionId,
+        description: newDescription,
+      };
+      modifyOpinion(
+        "opinions",
+        opinionId,
+        opinion, //element
+        "Opinión editada",
+        "Error al editar opinión"
+      );
+      console.log("Sí cambió");
+    }
+    console.log("xd");
+    setModifyModalShow(false);
   };
 
   const DeleteOpinion = () => {
@@ -90,7 +101,7 @@ const OpinionComponent = ({ element }) => {
           <div className={classes.container}>
             <ButtonGroup vertical>
               <Button>+</Button>
-              <Button disabled>0</Button>
+              <Button disabled>{likes}</Button>
               <Button>-</Button>
             </ButtonGroup>
 
@@ -143,7 +154,12 @@ const OpinionComponent = ({ element }) => {
           title="Modificar opinión"
           onHide={() => setModifyModalShow(false)}
         >
-          <NewOpinion onSend={ModifyOpinion} message={description} />
+          <NewOpinion
+            onSend={(newDescription, messageChanged) => {
+              ModifyOpinion(newDescription, messageChanged);
+            }}
+            message={description}
+          />
         </CustomModal>
       )}
 

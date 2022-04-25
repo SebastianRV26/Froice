@@ -13,9 +13,8 @@ const NewOpinion = (props) => {
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario"
 
   const send = (message) => {
-    if (message !== "" && message !== props.message) {
-      props.onSend(message);
-    }
+    const messageChanged = message !== "" && message !== props.message;
+    props.onSend(message, messageChanged);
     setMessage("");
   };
 
