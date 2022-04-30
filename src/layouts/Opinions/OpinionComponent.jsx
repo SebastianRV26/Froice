@@ -6,6 +6,7 @@ import {
   Container,
   Dropdown,
   DropdownButton,
+  Image,
   Navbar,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
@@ -15,15 +16,22 @@ import NewOpinion from "../../components/opinion/NewOpinion/NewOpinion";
 import useModify from "../../hooks/use-modify";
 import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
+import useAuth from "../../hooks/use-auth";
+import useUploadImage from "../../hooks/use-upload-image";
 
 const OpinionComponent = ({ element }) => {
-  let { name, time, description, likes } = element;
+  let { name, date, time, description, likes, userId } = element;
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
   const [reportModalShow, setReportModalShow] = useState(false);
   const [modifyOpinion] = useModify();
   const [deleteHook] = useDelete();
+  const [uploadImage, loadingImage] = useUploadImage();
+
+  const authData = useAuth();
+  const currentUserId = authData.user.uid;
+  const isOpinionFromCurrentUser = currentUserId === userId;
 
   const ChangeCommentModal = () => {
     setCommentModalShow((prevModalShow) => !prevModalShow);
@@ -76,7 +84,43 @@ const OpinionComponent = ({ element }) => {
     );
   };
 
-  const ReportOpinion = () => {};
+  const ReportOpinion = () => {
+    console.log("Reportar");
+  };
+
+  const getFriendlyTime = () => {
+    let current = new Date();
+    let cDate =
+      current.getFullYear() +
+      "-" +
+      (current.getMonth() + 1) +
+      "-" +
+      current.getDate();
+
+    const [year, month, day] = date.split("-");
+    const [hours, minutes, mSeconds] = time.split(":");
+    // console.log(year, month, day);
+
+    let message = "Hace unos minutos";
+    if (cDate === date) {
+      let cSeconds = current.getHours() * 3600 + current.getMinutes() * 60;
+      let seconds = hours * 3600 + minutes * 60;
+      //cSeconds > seconds
+      let diference = cSeconds - seconds;
+      // console.log(diference);
+      if (diference === 0) {
+        message = "Hace unos segundos";
+      } else if (diference < 3600) {
+        message = `Hace ${current.getMinutes() - minutes} minutos`;
+      } else {
+        message = `Hace ${current.getHours() - hours} horas`;
+      }
+    } else {
+      message = "Hace unos dias XD";
+    }
+
+    return message;
+  };
 
   return (
     <div>
@@ -88,15 +132,21 @@ const OpinionComponent = ({ element }) => {
             title="..."
             id="bg-vertical-dropdown-1"
           >
-            <Dropdown.Item eventKey="1" onClick={ChangeModifyModal}>
-              Modificar
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="2" onClick={ChangeDeleteModal}>
-              Eliminar
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="3" onClick={ChangeReportModal}>
-              Reportar
-            </Dropdown.Item>
+            {isOpinionFromCurrentUser && (
+              <Dropdown.Item eventKey="1" onClick={ChangeModifyModal}>
+                Modificar
+              </Dropdown.Item>
+            )}
+            {isOpinionFromCurrentUser && (
+              <Dropdown.Item eventKey="2" onClick={ChangeDeleteModal}>
+                Eliminar
+              </Dropdown.Item>
+            )}
+            {!isOpinionFromCurrentUser && (
+              <Dropdown.Item eventKey="3" onClick={ChangeReportModal}>
+                Reportar
+              </Dropdown.Item>
+            )}
           </DropdownButton>
           <div className={classes.container}>
             <ButtonGroup vertical>
@@ -109,7 +159,7 @@ const OpinionComponent = ({ element }) => {
               <Navbar bg="light">
                 <Container>
                   <Navbar.Brand>
-                    <img
+                    <Image
                       src={user}
                       width="35"
                       height="35"
@@ -119,10 +169,14 @@ const OpinionComponent = ({ element }) => {
                     />
                   </Navbar.Brand>
                   <Navbar.Brand>{name}</Navbar.Brand>
-                  <Navbar.Brand className={classes.time}>{time}</Navbar.Brand>
-                  <Button className={classes.time} variant="secondary">
-                    Follow
-                  </Button>
+                  <Navbar.Brand className={classes.time}>
+                    {getFriendlyTime()}
+                  </Navbar.Brand>
+                  {!isOpinionFromCurrentUser && (
+                    <Button className={classes.time} variant="secondary">
+                      Seguir
+                    </Button>
+                  )}
                 </Container>
               </Navbar>
 

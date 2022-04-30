@@ -8,6 +8,7 @@ import Login from "./layouts/Login/Login";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
 import UnauthenticatedRoute from "./components/Routes/UnauthenticatedRoute";
+import AuthenticatedRoute from "./components/Routes/AuthenticatedRoute";
 import Dashboard from "./layouts/Dashboard/Dashboard";
 import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
 import OpinionsView from "./layouts/Opinions/OpinionsView";
@@ -37,8 +38,12 @@ function App() {
           path="/forgot"
           element={<UnauthenticatedRoute component={ForgotPassword} />}
         />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/home" element={<OpinionsView />} />
+        {/*<Route path="/dashboard" element={<Dashboard />} />*/}
+        <Route
+          path="/dashboard"
+          element={<OpinionsView />}
+          //element={<AuthenticatedRoute component={OpinionsView} />}
+        />
         <Route path="/reports" element={<UsersReports />} />
         <Route path="/admin" element={<AdminView />}>
           <Route index element={<Users />} />
