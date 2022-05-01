@@ -7,12 +7,17 @@ const useConfirmationEmail = () => {
 
   const sendConfirmationEmail = useCallback(async (user) => {
     if (user.emailVerified) {
+      console.log(
+        "Sirve x3"
+      );
       return;
     }
     setLoading(true);
     try {
       await sendEmailVerification(user);
+
     } catch (error) {
+      console.log(error)
       setError(error);
     } finally {
       setLoading(false);
