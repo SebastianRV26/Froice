@@ -1,46 +1,31 @@
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
+import { collection, addDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase.config";
 import { toast } from "react-toastify";
-import { authErrors } from "../utils/errors";
-import { getFirestore } from 'firebase/firestore'
 
 const useCreateDocument = () => {
-  const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
-  const useCreateDocument = (collectionName, name, object) => {
+  const useCreateDocument = (collectionName, name, object, docRef = null) => {
     setLoading(true);
-    //tambien trate de utilizar el setDoc
-    console.log(collectionName, name, object);
-    const promise = addDoc(collection(db, collectionName), object);
 
-    toast.promise(promise, {
-      pending: {
-        render() {
-          return "Enviando petición";
-        },
-      },
-      success: {
-        render() {
-          return `${name} agregado exitosamente`;
-        },
-      },
-      error: {
-        render({ data: error }) {
-          console.log(error);
-          setError(error);
-          setLoading(false);
-          if (authErrors[error.code]) {
-            return authErrors[error.code];
-          }
-          return `Error al crear el ${name}`;
-        },
-      },
+    let promise;
+    if (docRef) {
+      promise = setDoc(docRef, object).finally(() => setLoading(false));
+    } else {
+      promise = addDoc(collection(db, collectionName), object).finally(() =>
+        setLoading(false)
+      );
+    }
+
+    return toast.promise(promise, {
+      pending: `Creando ${name.toLowerCase()}`,
+      success: `${name} agregado exitosamente`,
+      error: `Error al crear ${name.toLowerCase()}`,
     });
   };
 
-  return [useCreateDocument, loading, error];
+  return [useCreateDocument, loading];
 };
 
 export default useCreateDocument;

@@ -2,7 +2,6 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./layouts/Login/Login";
 import AdminPage from "./layouts/Admin/AdminView";
-import { ToastContainer } from "react-toastify";
 import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
@@ -10,11 +9,12 @@ import UnauthenticatedRoute from "./components/Routes/UnauthenticatedRoute";
 import AuthenticatedRoute from "./components/Routes/AuthenticatedRoute";
 import Dashboard from "./layouts/Dashboard/Dashboard";
 import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
+import Users from "./layouts/Users/Users";
+import Reports from "./layouts/Reports/Reports";
 
 function App() {
   return (
     <div className="App">
-      <ToastContainer />
       <Routes>
         <Route
           path="/"
@@ -42,7 +42,11 @@ function App() {
           element={
             <AuthenticatedRoute requieredRole={"admin"} component={AdminPage} />
           }
-        />
+        >
+          <Route index element={<Users />} />
+          <Route path="users" element={<Users />} />
+          <Route path="reports" element={<Reports />} />
+        </Route>
       </Routes>
     </div>
   );

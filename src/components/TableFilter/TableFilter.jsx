@@ -1,7 +1,8 @@
 import { orderBy, where } from "firebase/firestore";
-import { useState } from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { capitalizeFirstLetter } from "../../utils/utils";
 import TableComponent from "../Table/TableComponent";
 import classes from "./TableFilter.module.css";
 
@@ -19,8 +20,8 @@ const TableFilter = (props) => {
     } else {
       setQueryOptions([
         orderBy(filterType),
-        where(filterType, ">=", filterText),
-        where(filterType, "<=", filterText + "\uf8ff"),
+        where(filterType, ">=", capitalizeFirstLetter(filterText)),
+        where(filterType, "<=", capitalizeFirstLetter(filterText) + "\uf8ff"),
       ]);
     }
   };
@@ -29,9 +30,11 @@ const TableFilter = (props) => {
     <div className="container">
       <div className={classes.titleContainer}>
         <h3 className="text-center my-4">{props.title}</h3>
-        <Button onClick={props.button} className={classes.actionBtn}>
-          <i className="fas fa-plus"></i>
-        </Button>
+        {props.button && (
+          <Button onClick={props.button} className={classes.actionBtn}>
+            <i className="fas fa-plus"></i>
+          </Button>
+        )}
       </div>
       <Form className="row" onSubmit={handleSubmit}>
         <Form.Group className="mb-3 col-md">
@@ -63,8 +66,7 @@ const TableFilter = (props) => {
         columns={props.columns}
         collection={props.collection}
         queryOptions={queryOptions}
-        onModify={props.onModify}
-        onDelete={props.onDelete}
+        actions={props.actions}
       />
     </div>
   );
