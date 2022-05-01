@@ -39,7 +39,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/admin"
-          element={<AuthenticatedRoute component={AdminPage} />}
+          element={
+            <AuthenticatedRoute requieredRole={"admin"} component={AdminPage} />
+          }
         />
       </Routes>
     </div>
