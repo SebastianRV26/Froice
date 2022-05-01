@@ -13,6 +13,7 @@ import Dashboard from "./layouts/Dashboard/Dashboard";
 import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
 import OpinionsView from "./layouts/Opinions/OpinionsView";
 import UsersReports from "./layouts/UserReports/UsersReports";
+import AboutPage from "./layouts/About/AboutPage";
 
 function App() {
   return (
@@ -37,6 +38,10 @@ function App() {
         <Route
           path="/forgot"
           element={<UnauthenticatedRoute component={ForgotPassword} />}
+        />
+        <Route
+          path="/about"
+          element={<AboutPage/>}
         />
         {/*<Route path="/dashboard" element={<Dashboard />} />*/}
         <Route
