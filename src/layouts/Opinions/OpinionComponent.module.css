@@ -24,5 +24,9 @@
 }
 
 .options {
-  float: right;
+  float: right !important;
+}
+
+.container {
+  justify-content: left !important;
 }

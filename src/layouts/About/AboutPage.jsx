@@ -49,7 +49,7 @@ const AboutPage = () => {
   ];
   return (
     <div className={classes.view}>
-      <h2>About page</h2>
+      <h2>Acerca de la página</h2>
       <p>Este proyecto fue desarrollado por las siguientes personas:</p>
 
       <WorkerCards workers={workers} />

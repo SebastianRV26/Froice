@@ -30,7 +30,6 @@ const CreateOpinion = () => {
       const name = authData.user.displayName;
       const userId = authData.user.uid;
       const { date, time } = getTime();
-      console.log(getTime());
       const opinion = { name, userId, description, likes: 0, date, time };
       addDoc("opinions", "Opinion", opinion);
     }

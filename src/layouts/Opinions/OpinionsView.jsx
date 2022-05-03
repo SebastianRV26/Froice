@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import OpinionsTable from "./OpinionsTable";
 import { signOut } from "firebase/auth";
-import { auth, db } from "../../firebase/firebase.config";
+import { auth, db, storage } from "../../firebase/firebase.config";
 import { collection, orderBy, where } from "firebase/firestore";
 import useAuth from "../../hooks/use-auth";
 import { PaginationHelper } from "../../helpers/PaginationHelper";
+import { getDownloadURL, ref } from "firebase/storage";
+import { useNavigate } from "react-router-dom";
 //import classes from "./OpinionsView.module.css";
 
 const myOpinions = [
@@ -41,13 +43,13 @@ const OpinionsView = () => {
   const [opinions, setOpinions] = useState([]);
   const authData = useAuth();
   const userId = authData.user.uid;
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // para el helper
   const [opinionsCollection, setOpinionsCollection] = useState(
     collection(db, "opinions")
   );
-
-  //console.log(opinionsCollection)
 
   const columns = [{ key: "name", label: "Nombre", filter: true }];
   const filters = columns.filter((colData) => colData.filter);
@@ -56,14 +58,39 @@ const OpinionsView = () => {
     orderBy(filters[0].key),
   ]);
   const pageSize = 5;
+
+  const onFetchStart = useCallback(() => {
+    setLoading(true);
+  }, []);
+
+  const onFetchFinish = useCallback(async (list) => {
+    for (let opinion of list) {
+      if (opinion?.imageUrl)
+        opinion.imageUrl = await getDownloadURL(ref(storage, opinion.image));
+    }
+    setOpinions(list);
+    setLoading(false);
+  }, []);
+
+  const onFetchError = useCallback((error) => {
+    setLoading(false);
+    console.log(error);
+  }, []);
+
   const { list, page, showNextPage, showPreviousPage } = PaginationHelper(
     opinionsCollection,
     myQueryOptions,
-    pageSize
+    pageSize,
+    onFetchStart,
+    onFetchFinish,
+    onFetchError
   );
 
   const signOutHandler = () => {
     signOut(auth);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   const handleOpinion = (mCollection, isOwn = false) => {
@@ -73,10 +100,8 @@ const OpinionsView = () => {
         where("userId", "==", userId),
         orderBy(filters[0].key),
       ]);
-    }else{
-      setMyQueryOptions([
-        orderBy(filters[0].key),
-      ]);
+    } else {
+      setMyQueryOptions([orderBy(filters[0].key)]);
     }
 
     setOpinionsCollection(collection(db, mCollection));
@@ -97,16 +122,16 @@ const OpinionsView = () => {
                   handleOpinion("opinions"); // homeOpinions
                 }}
               >
-                Home
+                Inicio
               </Nav.Link>
               <Nav.Link
                 onClick={() => {
                   handleOpinion("opinions"); // homeOpinions
                 }}
               >
-                Explore
+                Explorar
               </Nav.Link>
-              <Nav.Link href="#notifications">Notifications</Nav.Link>
+              <Nav.Link href="#notifications">Notificaciones</Nav.Link>
               <NavDropdown title="Cuenta" id="basic-nav-dropdown">
                 <NavDropdown.Item
                   onClick={() => {

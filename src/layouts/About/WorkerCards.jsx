@@ -1,15 +1,18 @@
 import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import classes from "./WorkerCards.module.css";
 
 const WorkerCards = ({ workers }) => {
+  const openUrl = (url) => {
+    window.open(url, "_blank", "noopener noreferrer");
+  };
+
   return (
     <>
-      <div className={classes.center}>
-        <Row xs={1} md={3} className={`g-4`}>
-          {workers.map((el, idx) => (
-            <Col key={idx} className={`${classes.text}`}>
+      <Row xs={1} md={3} className={`g-4`}>
+        {workers.map((el, idx) => (
+          <Col key={idx} className={`${classes.text}`}>
+            <div className={classes.center}>
               <Card style={{ width: "19rem" }} className={classes.rounded}>
                 <Card.Img
                   className={classes.rounded}
@@ -27,20 +30,25 @@ const WorkerCards = ({ workers }) => {
                   <br />
                   <Button
                     className={classes.right}
-                    as={Link}
-                    to={`https://github.com/${el.github}`}
+                    onClick={() => {
+                      openUrl(`https://github.com/${el.github}`);
+                    }}
                   >
                     GitHub
                   </Button>
-                  <Button as={Link} to={`https://github.com/${el.github}`}>
+                  <Button
+                    onClick={() => {
+                      openUrl(`https://www.linkedin.com/in/${el.linkedin}/`);
+                    }}
+                  >
                     LinkedIn
                   </Button>
                 </Card.Footer>
               </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
+            </div>
+          </Col>
+        ))}
+      </Row>
     </>
   );
 };

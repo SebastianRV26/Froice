@@ -42,7 +42,7 @@ const NewOpinion = (props) => {
             variant="primary"
             className={classes.send}
           >
-            Send
+            Enviar
           </Button>
         </div>
       </Card.Body>

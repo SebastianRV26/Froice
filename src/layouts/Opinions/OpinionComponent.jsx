@@ -33,59 +33,43 @@ const OpinionComponent = ({ element }) => {
   const currentUserId = authData.user.uid;
   const isOpinionFromCurrentUser = currentUserId === userId;
 
-  const ChangeCommentModal = () => {
-    setCommentModalShow((prevModalShow) => !prevModalShow);
+  const changeModal = (setModal) => {
+    setModal((prevModalShow) => !prevModalShow);
   };
 
-  const ChangeDeleteModal = () => {
-    setDeleteModalShow((prevModalShow) => !prevModalShow);
+  const Comment = () => {
+    console.log("Comentario");
+    changeModal(setCommentModalShow);
   };
-
-  const ChangeModifyModal = () => {
-    setModifyModalShow((prevModalShow) => !prevModalShow);
-  };
-
-  const ChangeReportModal = () => {
-    setReportModalShow((prevModalShow) => !prevModalShow);
-  };
-
-  const Comment = () => {};
 
   const ModifyOpinion = (newDescription, messageChanged) => {
     if (messageChanged) {
-      let opinionId = "XDXD";
-      let opinion = {
-        name,
-        time,
-        likes,
-        opinionId,
-        description: newDescription,
-      };
+      let opinion = { ...element, description: newDescription };
       modifyOpinion(
         "opinions",
-        opinionId,
-        opinion, //element
+        element.id,
+        opinion,
         "Opinión editada",
         "Error al editar opinión"
       );
       console.log("Sí cambió");
     }
-    console.log("xd");
-    setModifyModalShow(false);
+    changeModal(setModifyModalShow);
   };
 
   const DeleteOpinion = () => {
-    let opinionId = "XDXD";
     deleteHook(
       "opinions",
-      opinionId,
-      "Se elimino la opinión",
+      element.id,
+      "Se eliminó la opinión",
       "Error al eliminar opinión"
     );
+    changeModal(setDeleteModalShow);
   };
 
   const ReportOpinion = () => {
     console.log("Reportar");
+    changeModal(setReportModalShow);
   };
 
   const getFriendlyTime = () => {
@@ -107,19 +91,21 @@ const OpinionComponent = ({ element }) => {
       let seconds = hours * 3600 + minutes * 60;
       //cSeconds > seconds
       let diference = cSeconds - seconds;
-      // console.log(diference);
       if (diference === 0) {
         message = "Hace unos segundos";
       } else if (diference < 3600) {
-        message = `Hace ${current.getMinutes() - minutes} minutos`;
+        message = `Hace ${diference / 60} minutos`;
       } else {
         message = `Hace ${current.getHours() - hours} horas`;
       }
     } else {
       message = "Hace unos dias XD";
     }
-
     return message;
+  };
+
+  const followUser = (userToFollow) => {
+    console.log("Follow " + userToFollow);
   };
 
   return (
@@ -133,17 +119,32 @@ const OpinionComponent = ({ element }) => {
             id="bg-vertical-dropdown-1"
           >
             {isOpinionFromCurrentUser && (
-              <Dropdown.Item eventKey="1" onClick={ChangeModifyModal}>
+              <Dropdown.Item
+                eventKey="1"
+                onClick={() => {
+                  changeModal(setModifyModalShow);
+                }}
+              >
                 Modificar
               </Dropdown.Item>
             )}
             {isOpinionFromCurrentUser && (
-              <Dropdown.Item eventKey="2" onClick={ChangeDeleteModal}>
+              <Dropdown.Item
+                eventKey="2"
+                onClick={() => {
+                  changeModal(setDeleteModalShow);
+                }}
+              >
                 Eliminar
               </Dropdown.Item>
             )}
             {!isOpinionFromCurrentUser && (
-              <Dropdown.Item eventKey="3" onClick={ChangeReportModal}>
+              <Dropdown.Item
+                eventKey="3"
+                onClick={() => {
+                  changeModal(setReportModalShow);
+                }}
+              >
                 Reportar
               </Dropdown.Item>
             )}
@@ -157,7 +158,7 @@ const OpinionComponent = ({ element }) => {
 
             <div className={classes.item2}>
               <Navbar bg="light">
-                <Container>
+                <Container className={classes.container}>
                   <Navbar.Brand>
                     <Image
                       src={user}
@@ -173,7 +174,13 @@ const OpinionComponent = ({ element }) => {
                     {getFriendlyTime()}
                   </Navbar.Brand>
                   {!isOpinionFromCurrentUser && (
-                    <Button className={classes.time} variant="secondary">
+                    <Button
+                      className={classes.time}
+                      variant="secondary"
+                      onClick={() => {
+                        followUser(userId);
+                      }}
+                    >
                       Seguir
                     </Button>
                   )}
@@ -181,8 +188,13 @@ const OpinionComponent = ({ element }) => {
               </Navbar>
 
               <Card.Text>{description}</Card.Text>
-              <Button onClick={ChangeCommentModal} variant="primary">
-                Comment
+              <Button
+                onClick={() => {
+                  changeModal(setCommentModalShow);
+                }}
+                variant="primary"
+              >
+                Comentar
               </Button>
             </div>
           </div>
@@ -195,7 +207,7 @@ const OpinionComponent = ({ element }) => {
           show={commentModalShow}
           title="Comentar opinión"
           message=""
-          onHide={() => setCommentModalShow(false)}
+          onHide={() => changeModal(setCommentModalShow)}
         >
           <NewOpinion onSend={Comment} message="" />
         </CustomModal>
@@ -206,7 +218,7 @@ const OpinionComponent = ({ element }) => {
         <CustomModal
           show={modifyModalShow}
           title="Modificar opinión"
-          onHide={() => setModifyModalShow(false)}
+          onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
             onSend={(newDescription, messageChanged) => {
@@ -222,9 +234,10 @@ const OpinionComponent = ({ element }) => {
         <ConfirmationModal
           show={deleteModalShow}
           title={"Eliminar opinión"}
+          myButtonTitle="Eliminar"
           description={"Está seguro de que desea eliminar esta opinión?"}
           onConfirm={DeleteOpinion}
-          onHide={() => setDeleteModalShow(false)}
+          onHide={() => changeModal(setDeleteModalShow)}
         />
       )}
 
@@ -233,9 +246,10 @@ const OpinionComponent = ({ element }) => {
         <ConfirmationModal
           show={reportModalShow}
           title={"Reportar opinión"}
+          myButtonTitle="Reportar"
           description={"Está seguro de que desea reportar esta opinión?"}
           onConfirm={ReportOpinion}
-          onHide={() => setReportModalShow(false)}
+          onHide={() => changeModal(setReportModalShow)}
         />
       )}
     </div>
