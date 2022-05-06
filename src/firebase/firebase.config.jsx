@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-import { useNavigate } from "react-router-dom";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {

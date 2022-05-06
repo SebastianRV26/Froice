@@ -1,10 +1,8 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import AdminView from "./layouts/Admin/AdminView";
-import Users from "./layouts/Users/Users";
-import Reports from "./layouts/Reports/Reports";
-import Landpage from "./layouts/Landpage/Landpage";
 import Login from "./layouts/Login/Login";
+import AdminPage from "./layouts/Admin/AdminView";
+import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
 import UnauthenticatedRoute from "./components/Routes/UnauthenticatedRoute";
@@ -14,6 +12,8 @@ import ForgotPassword from "./layouts/ForgotPassword/ForgotPassword";
 import OpinionsView from "./layouts/Opinions/OpinionsView";
 import UsersReports from "./layouts/UserReports/UsersReports";
 import AboutPage from "./layouts/About/AboutPage";
+import Users from "./layouts/Users/Users";
+import Reports from "./layouts/Reports/Reports";
 
 function App() {
   return (
@@ -50,13 +50,16 @@ function App() {
           //element={<AuthenticatedRoute component={OpinionsView} />}
         />
         <Route path="/reports" element={<UsersReports />} />
-        <Route path="/admin" element={<AdminView />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/admin"
+          element={
+            <AuthenticatedRoute requieredRole={"admin"} component={AdminPage} />
+          }
+        >
           <Route index element={<Users />} />
           <Route path="users" element={<Users />} />
           <Route path="reports" element={<Reports />} />
-          {/* <Route path="profile" element={<Login />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="products" element={<Products />} /> */}
         </Route>
       </Routes>
     </div>
