@@ -7,18 +7,26 @@ import edit from "../../assets/icons/edit.svg";
 import trash from "../../assets/icons/trash.svg";
 import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 import useDelete from "../../hooks/use-delete";
+import UserModal from "./UserModal";
 
 const Users = () => {
   const [deleteModal, setDeleteModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [usersCollection, setUsersCollection] = useState(
     collection(db, "users")
   );
   const [deleteHook, loading] = useDelete();
+  const [modalShow, setModalShow] = useState(false);
 
   const openDeleteHandler = (user) => {
     setUserId(user.id);
-    setDeleteModal((prevDeleteModal) => !prevDeleteModal);
+    setDeleteModal(true);
+  };
+
+  const modifyHandler = (newUser) => {
+    setUser(newUser);
+    setModalShow(true);
   };
 
   const deleteUserHandler = () => {
@@ -45,7 +53,7 @@ const Users = () => {
             key: "modify",
             label: "Modificar usuario",
             icon: edit,
-            actionHandler: () => {},
+            actionHandler: (user) => modifyHandler(user),
           },
           {
             key: "delete",
@@ -55,6 +63,14 @@ const Users = () => {
           },
         ]}
       />
+      {modalShow && (
+        <UserModal
+          show={modalShow}
+          user={user}
+          onHide={() => setModalShow(false)}
+          onSuccess={() => setUsersCollection(collection(db, "users"))}
+        />
+      )}
       {deleteModal && (
         <ConfirmationModal
           show={deleteModal}
