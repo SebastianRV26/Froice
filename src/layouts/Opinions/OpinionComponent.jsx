@@ -18,9 +18,14 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase.config";
 
 const OpinionComponent = ({ element }) => {
-  let { name, date, time, description, likes, userId } = element;
+  let { id, name, publishedDate, description, userId } = element;
+
+  const [likes, setLikes] = useState(element.likes);
+  const [dislikes, setDislikes] = useState(element.dislikes);
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
@@ -73,39 +78,65 @@ const OpinionComponent = ({ element }) => {
   };
 
   const getFriendlyTime = () => {
-    let current = new Date();
-    let cDate =
-      current.getFullYear() +
-      "-" +
-      (current.getMonth() + 1) +
-      "-" +
-      current.getDate();
-
-    const [year, month, day] = date.split("-");
-    const [hours, minutes, mSeconds] = time.split(":");
-    // console.log(year, month, day);
-
-    let message = "Hace unos minutos";
-    if (cDate === date) {
-      let cSeconds = current.getHours() * 3600 + current.getMinutes() * 60;
-      let seconds = hours * 3600 + minutes * 60;
-      //cSeconds > seconds
-      let diference = cSeconds - seconds;
-      if (diference === 0) {
-        message = "Hace unos segundos";
-      } else if (diference < 3600) {
-        message = `Hace ${diference / 60} minutos`;
-      } else {
-        message = `Hace ${current.getHours() - hours} horas`;
-      }
-    } else {
-      message = "Hace unos dias XD";
+    const currentDate = new Date();
+    const opinionDate = publishedDate.toDate();
+    const secondsDiff = (currentDate.getTime() - opinionDate.getTime()) / 1000;
+    if (secondsDiff < 60) {
+      return "Hace unos segundos";
     }
-    return message;
+    if (secondsDiff < 3600) {
+      return "Hace unos minutos";
+    }
+    if (secondsDiff < 86400) {
+      return "Hace unas horas";
+    }
+    return opinionDate.toDateString();
   };
 
   const followUser = (userToFollow) => {
     console.log("Follow " + userToFollow);
+  };
+
+  const likeHandler = () => {
+    if (likes.includes(currentUserId)) {
+      const document = doc(db, "opinions", id);
+      updateDoc(document, {
+        likes: arrayRemove(currentUserId),
+      }).then(() => {
+        setLikes(likes.filter((id) => id !== currentUserId));
+      });
+    } else {
+      if (dislikes.includes(currentUserId)) {
+        dislikeHandler();
+      }
+      const document = doc(db, "opinions", id);
+      updateDoc(document, {
+        likes: arrayUnion(currentUserId),
+      }).then(() => {
+        setLikes([currentUserId, ...likes]);
+      });
+    }
+  };
+
+  const dislikeHandler = () => {
+    if (dislikes.includes(currentUserId)) {
+      const document = doc(db, "opinions", id);
+      updateDoc(document, {
+        dislikes: arrayRemove(currentUserId),
+      }).then(() => {
+        setDislikes(dislikes.filter((id) => id !== currentUserId));
+      });
+    } else {
+      if (likes.includes(currentUserId)) {
+        likeHandler();
+      }
+      const document = doc(db, "opinions", id);
+      updateDoc(document, {
+        dislikes: arrayUnion(currentUserId),
+      }).then(() => {
+        setDislikes([currentUserId, ...dislikes]);
+      });
+    }
   };
 
   return (
@@ -151,9 +182,9 @@ const OpinionComponent = ({ element }) => {
           </DropdownButton>
           <div className={classes.container}>
             <ButtonGroup vertical>
-              <Button>+</Button>
-              <Button disabled>{likes}</Button>
-              <Button>-</Button>
+              <Button onClick={likeHandler.bind(null, id)}>+</Button>
+              <Button disabled>{likes.length - dislikes.length}</Button>
+              <Button onClick={dislikeHandler.bind(null, id)}>-</Button>
             </ButtonGroup>
 
             <div className={classes.item2}>
