@@ -29,14 +29,22 @@ exports.signUp = functions.https.onCall(async (data) => {
   }
 });
 
-exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
+exports.createUser = functions.auth.user().onCreate(async (user) => {
   let userData = {
     uid: user.uid,
     email: user.email,
     name: user.displayName,
     phoneNumber: user.phoneNumber,
   };
-  return admin.firestore().collection("users").doc(user.uid).set(userData);
+  const claimsPromise = admin.auth().setCustomUserClaims(user.uid, {
+    role: "user",
+  });
+  const saveUserPromise = admin
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .set(userData);
+  return Promise.all([claimsPromise, saveUserPromise]);
 });
 
 exports.modifyUser = functions.firestore
