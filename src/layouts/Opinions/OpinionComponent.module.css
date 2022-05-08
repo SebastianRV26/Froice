@@ -30,3 +30,9 @@
 .container {
   justify-content: left !important;
 }
+
+.ta {
+  width: 100%;
+  height: auto;
+  resize: none;
+}
