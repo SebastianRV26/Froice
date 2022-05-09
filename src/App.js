@@ -8,6 +8,7 @@ import RegisterConfirmation from './layouts/RegisterConfirmation/RegisterConfirm
 import UnauthenticatedRoute from './components/Routes/UnauthenticatedRoute';
 import Dashboard from './layouts/Dashboard/Dashboard';
 import ForgotPassword from './layouts/ForgotPassword/ForgotPassword';
+import Users from './layouts/Users/UsersEdit'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/registerConfirmation" element={<UnauthenticatedRoute component={RegisterConfirmation} />} />
         <Route path="/forgot" element={<UnauthenticatedRoute component={ForgotPassword} />} />
         <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/users" element={<Users/>} />
       </Routes>
     </div>
   );
