@@ -1,0 +1,32 @@
+.myrow {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  margin-top: 5px;
+}
+
+.container {
+  display: inline-flex;
+  align-items: center;
+}
+
+.item2 {
+  margin-left: 10px;
+}
+
+.image {
+  width: 35px;
+}
+
+.time {
+  color: gray !important;
+  font-size: small;
+}
+
+.options {
+  float: right !important;
+}
+
+.container {
+  justify-content: left !important;
+}

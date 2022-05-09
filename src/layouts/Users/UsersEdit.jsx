@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+//import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
 import classes from "./UsersEdit.module.css";
 import { doc, updateDoc } from "firebase/firestore";
@@ -15,7 +15,7 @@ import {
 } from "firebase/auth";
 
 const FormEditUser = ({ onSubmit, defaultValues  }) => {
-  const { register, handleSubmit } = useForm({ defaultValues });
+//  const { register, handleSubmit } = useForm({ defaultValues });
 
   return (
     <div className={classes.Container}>
@@ -23,7 +23,7 @@ const FormEditUser = ({ onSubmit, defaultValues  }) => {
                     <h1>Edit your profile</h1>
                     <div className={classes.hl} />
                 </div>
-      <form className={classes.panel} onSubmit={handleSubmit(onSubmit)}>
+      <form className={classes.panel} onSubmit={onSubmit}>
         <div className={classes.form}>
           <div className="users-form-label">
             <label className={classes.label}>Name</label>
@@ -31,7 +31,7 @@ const FormEditUser = ({ onSubmit, defaultValues  }) => {
           <div>
             <input
               className={classes.input}
-              {...register("name", { required: "The name is required" })}
+              //{...register("name", { required: "The name is required" })}
               placeholder="Nombre"
             />
           </div>
@@ -41,7 +41,7 @@ const FormEditUser = ({ onSubmit, defaultValues  }) => {
           <div>
             <input
               className={classes.input}
-              {...register("email", { required: "The email is required" })}
+              //{...register("email", { required: "The email is required" })}
               placeholder="Email"
             />
           </div>
@@ -51,9 +51,7 @@ const FormEditUser = ({ onSubmit, defaultValues  }) => {
           <div>
             <input
               className={classes.input}
-              {...register("phoneNumber", {
-                required: "The phone is required",
-              })}
+              //{...register("phoneNumber", {required: "The phone is required",})}
               placeholder="Phone"
             />
           </div>
@@ -66,7 +64,7 @@ const FormEditUser = ({ onSubmit, defaultValues  }) => {
   );
 };
 const FormChPassw = ({ onSubmit}) => {
-  const { register, handleSubmit } = useForm();
+  //const { register, handleSubmit } = useForm();
   const [hasCapitalLetters, setHasCapitalLetters] = useState(false);
   const [hasLowercaseLetters, setHasLowercaseLetters] = useState(false);
   const [hasMinLength, setHasMinLength] = useState(false);
@@ -94,16 +92,14 @@ useEffect(() => {
                     <h1>Change your password</h1>
                     <div className={classes.hl} />
                 </div>
-      <form className={classes.panel2} onSubmit={handleSubmit(onSubmit)}>
+      <form className={classes.panel2} onSubmit={onSubmit}>
         <div className="users-form-label">
           <label className={classes.label}>Current password</label>
         </div>
         <div>
           <input
             className={classes.input}
-            {...register("password", {
-              required: "The phone is required",
-            })}
+            //{...register("password", {required: "The phone is required",})}
             placeholder="Current password"
           />
         </div>
@@ -113,9 +109,7 @@ useEffect(() => {
         <div>
           <input onChange={passwordInputOnChange} ref={passwordRef} faIcon={faLock}
             className={classes.input}
-            {...register("newPassword", {
-              required: "The password is required",
-            })}
+            //{...register("newPassword", {required: "The password is required",})}
             placeholder="New password"
           />
         </div>
@@ -134,9 +128,7 @@ useEffect(() => {
           <label className={classes.label}>Confirm password</label>
           <input
             className={classes.input}
-            {...register("confPassword", {
-              required: "The password is required",
-            })}
+            //{...register("confPassword", {required: "The password is required",})}
             placeholder="Confirm password"
           />
         </div>

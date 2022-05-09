@@ -1,0 +1,16 @@
+.text {
+  text-align: center;
+}
+
+.right {
+  margin-right: 3px;
+}
+
+.rounded {
+  border-radius: 30px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}

@@ -1,19 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import './Theme.min.css';
-import "./index.css";
 import App from "./App";
-
-
+import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import FirebaseAuthProvider from "./store/auth-context"
+import FirebaseAuthProvider from "./store/auth-context";
+import { ToastContainer } from "react-toastify";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <FirebaseAuthProvider >
+      <FirebaseAuthProvider>
         <App />
+        <ToastContainer />
       </FirebaseAuthProvider>
     </BrowserRouter>
   </React.StrictMode>,

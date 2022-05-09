@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.input-icon {
+  position: absolute;
+  z-index: 2;
+  display: block !important;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 1.3rem !important;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.input-spacing {
+  padding-left: 2.2rem !important;
+}
+
+/*! `Custom` Bootstrap 5 theme */
+@import url(https://use.fontawesome.com/releases/v5.0.10/css/all.css);
+
+//$enable-grid-classes:false;
+$primary:#07689F;
+$secondary:#C9D6DF;
+$success:#11D3BC;
+$danger:#F67280;
+$info:#A2D5F2;
+$warning:#FF7E67;
+$light:#FAFAFA;
+$dark:#4e4e4e;
+$spacer:1rem;
+$border-width:1px;
+$btn-border-radius:.25rem;
+@import "bootstrap";
+
+// Add SASS theme customizations here..
