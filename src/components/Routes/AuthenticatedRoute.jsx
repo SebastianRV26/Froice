@@ -11,7 +11,7 @@ const AuthenticatedRoute = ({ component: RouteComponent, requieredRole }) => {
   ) {
     if (location.pathname === "/verify-email") {
       if (authData.user.emailVerified) {
-        <Navigate to="/admin" replace={true} />;
+        <Navigate to="/dashboard" replace={true} />;
       } else {
         return <RouteComponent />;
       }

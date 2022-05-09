@@ -1,0 +1,72 @@
+.container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+}
+
+.border {
+  width: 100px;
+  height: 100px;
+  border: #bdbdbd 2px dashed;
+  border-radius: 10px;
+}
+
+.border.error {
+  border-color: var(--bs-danger);
+}
+
+.remove {
+  position: absolute;
+  z-index: 2;
+  top: 1px;
+  right: 1px;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  padding: 0;
+  line-height: 0.7;
+  border: #bec3c7 1px solid;
+}
+
+.image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.dropzone {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.dropzone .plusIcon {
+  color: #bdbdbd;
+  height: 100%;
+  font-size: 75px;
+  line-height: 1.25;
+}
+
+.noImg:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+.withImg:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.withImg:hover .plusIcon {
+  color: white;
+  visibility: visible;
+}
+
+.withImg .plusIcon {
+  visibility: hidden;
+}
