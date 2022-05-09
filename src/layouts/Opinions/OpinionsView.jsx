@@ -90,7 +90,7 @@ const OpinionsView = () => {
     signOut(auth);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/");
+    navigate('/');
   };
 
   const handleOpinion = (mCollection, isOwn = false) => {

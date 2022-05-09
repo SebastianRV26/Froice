@@ -8,6 +8,7 @@ import useAuth from "../../hooks/use-auth";
 const UsersReports = () => {
   const authData = useAuth();
   const currentUserId = authData.user.uid;
+  console.log(currentUserId)
   const [reportsCollection, setReportsCollection] = useState(
     collection(db, `users/${currentUserId}/reports`)
   );
@@ -17,8 +18,8 @@ const UsersReports = () => {
       <TableFilter
         title="Reportes"
         columns={[
-          { key: "reporterName", label: "Usuario reportado", filter: true },
-          { key: "reportedName", label: "Usuario reportador", filter: true },
+          { key: "reportedName", label: "Usuario reportado", filter: true },
+          { key: "reporterName", label: "Usuario reportador", filter: true },
           { key: "opinionText", label: "Opinión", filter: false },
           { key: "description", label: "Descripción", filter: false },
           { key: "response", label: "Respuesta", filter: false },
