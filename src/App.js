@@ -17,7 +17,7 @@ function App() {
         <Route path="/" element={<UnauthenticatedRoute component={Landpage} /> } />
         <Route path="/login" element={<UnauthenticatedRoute component={Login} />} />
         <Route path="/register" element={<UnauthenticatedRoute component={Register} />} />
-        <Route path="/registerConfirmation" element={<UnauthenticatedRoute component={RegisterConfirmation} />} />
+        <Route path="/registerConfirmation" element={<RegisterConfirmation />} />
         <Route path="/forgot" element={<UnauthenticatedRoute component={ForgotPassword} />} />
         <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
