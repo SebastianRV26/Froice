@@ -1,7 +1,7 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./layouts/Login/Login";
-import AdminPage from "./layouts/Admin/AdminView";
+import AdminPage from "./layouts/admin/AdminView";
 import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
@@ -42,13 +42,13 @@ function App() {
         />
         <Route
           path="/about"
-          element={<AboutPage/>}
+          element={<AboutPage />}
         />
         {/*<Route path="/dashboard" element={<Dashboard />} />*/}
         <Route
           path="/dashboard"
-          //element={<OpinionsView />}
-          element={<AuthenticatedRoute component={OpinionsView} />}
+          element={<OpinionsView />}
+        //element={<AuthenticatedRoute component={OpinionsView} />}
         />
         <Route path="/tags" element={<SelectTags />} />
         <Route path="/reports" element={<UsersReports />} />
@@ -58,7 +58,7 @@ function App() {
             <AuthenticatedRoute requieredRole={"admin"} component={AdminPage} />
           }
         >
-          <Route index element={<Users />} />
+          <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<Users />} />
           <Route path="reports" element={<Reports />} />
         </Route>
