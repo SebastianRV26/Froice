@@ -1,7 +1,7 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./layouts/Login/Login";
-import AdminPage from "./layouts/admin/AdminView";
+import AdminPage from "./layouts/Admin/AdminView";
 import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
