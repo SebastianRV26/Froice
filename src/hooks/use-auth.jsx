@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { FirebaseAuthContext } from "../store/auth-context";
 
+
 const useAuth = () => {
   const context = useContext(FirebaseAuthContext);
   if (context === undefined) {
@@ -8,5 +9,6 @@ const useAuth = () => {
   }
   return context;
 };
+
 
 export default useAuth;

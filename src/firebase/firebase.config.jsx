@@ -21,6 +21,7 @@ const auth = getAuth(app);
 const functions = getFunctions(app);
 const storage = getStorage(app);
 
+
 // Emulators
 connectFirestoreEmulator(db, "localhost", 8080);
 connectAuthEmulator(auth, "http://localhost:9099");
