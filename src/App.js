@@ -14,6 +14,7 @@ import UsersReports from "./layouts/UserReports/UsersReports";
 import AboutPage from "./layouts/About/AboutPage";
 import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";
+import SelectTags from "./layouts/SelectTags/SelectTags";
 
 function App() {
   return (
@@ -46,11 +47,11 @@ function App() {
         {/*<Route path="/dashboard" element={<Dashboard />} />*/}
         <Route
           path="/dashboard"
-          element={<OpinionsView />}
-          //element={<AuthenticatedRoute component={OpinionsView} />}
+          //element={<OpinionsView />}
+          element={<AuthenticatedRoute component={OpinionsView} />}
         />
+        <Route path="/tags" element={<SelectTags />} />
         <Route path="/reports" element={<UsersReports />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/admin"
           element={
