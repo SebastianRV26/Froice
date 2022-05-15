@@ -8,7 +8,7 @@ import { collection, orderBy, where } from "firebase/firestore";
 import useAuth from "../../hooks/use-auth";
 import { PaginationHelper } from "../../helpers/PaginationHelper";
 import { getDownloadURL, ref } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 //import classes from "./OpinionsView.module.css";
 
 const myOpinions = [
@@ -139,6 +139,9 @@ const OpinionsView = () => {
                   }}
                 >
                   Mi Perfil
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/reports">
+                  Mis reportes
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={signOutHandler}>
                   Cerrar sesión

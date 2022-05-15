@@ -23,6 +23,7 @@ import { db, storage } from "../../firebase/firebase.config";
 import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
 import { resizeImage } from "../../utils/utils";
+import useCreateDocument from "../../hooks/use-create-document";
 
 const OpinionComponent = ({ element }) => {
   let { id, name, publishedDate, description, userId, image } = element;
@@ -35,7 +36,9 @@ const OpinionComponent = ({ element }) => {
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
   const [reportModalShow, setReportModalShow] = useState(false);
+  const [descriptionMessage, setDescriptionMessage] = useState("");
   const [modifyOpinion] = useModify();
+  const [addDoc] = useCreateDocument();
   const [deleteHook] = useDelete();
   const [uploadImage] = useUploadImage();
   const [deleteImage] = useDeleteImage();
@@ -104,6 +107,16 @@ const OpinionComponent = ({ element }) => {
   };
 
   const ReportOpinion = () => {
+    const data = {
+      reportedId: userId,
+      reportedName: name,
+      reporterId: currentUserId,
+      reporterName: authData.user.displayName,
+      opinionId: element.id,
+      opinionText: description,
+      description: descriptionMessage,
+    };
+    addDoc("reports", "Reporte", data);
     changeModal(setReportModalShow);
   };
 
@@ -308,16 +321,27 @@ const OpinionComponent = ({ element }) => {
       )}
 
       {/*Report Modal */}
+
       {reportModalShow && (
-        <ConfirmationModal
+        <CustomModal
           show={reportModalShow}
           title={"Reportar opinión"}
-          myButtonTitle="Reportar"
-          description={"Está seguro de que desea reportar esta opinión?"}
-          onConfirm={ReportOpinion}
           onHide={() => changeModal(setReportModalShow)}
-        />
+          onConfirm={ReportOpinion}
+          myButtonTitle={"Reportar"}
+        >
+          <div className="mx-2">
+            <p>Por Favor ingrese el motivo del reporte</p>
+            <textarea
+              placeholder={"ingrese el motivo"}
+              value={descriptionMessage}
+              onChange={(e) => setDescriptionMessage(e.target.value)}
+              className={classes.ta}
+            />
+          </div>
+        </CustomModal>
       )}
+
     </div>
   );
 };
