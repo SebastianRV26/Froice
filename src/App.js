@@ -15,6 +15,7 @@ import AboutPage from "./layouts/About/AboutPage";
 import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";
 import SelectTags from "./layouts/SelectTags/SelectTags";
+import UsersE from './layouts/Users/UsersEdit';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         />
         <Route path="/tags" element={<SelectTags />} />
         <Route path="/reports" element={<UsersReports />} />
+        <Route path="/usersE" element={<UsersE/>} />
         <Route
           path="/admin"
           element={
