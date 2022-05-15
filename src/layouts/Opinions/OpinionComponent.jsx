@@ -341,7 +341,6 @@ const OpinionComponent = ({ element }) => {
           </div>
         </CustomModal>
       )}
-
     </div>
   );
 };
