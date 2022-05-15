@@ -18,9 +18,9 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
+import useCreateDocument from "../../hooks/use-create-document";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase.config";
-import useCreateDocument from "../../hooks/use-create-document";
 
 const OpinionComponent = ({ element }) => {
   let { id, name, publishedDate, description, userId } = element;
