@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
@@ -29,6 +29,8 @@ const OpinionComponent = ({ element }) => {
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
+  // const [following, setFollowing] = useState(element.following);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
@@ -109,6 +111,15 @@ const OpinionComponent = ({ element }) => {
 
   const followUser = (userToFollow) => {
     console.log("Follow " + userToFollow);
+    const document = doc(db, "users", currentUserId);
+    updateDoc(document, {
+      following: arrayUnion(userToFollow),
+    }).then(() => {
+      /*setFollowing(
+        following?.filter((currentUserId) => currentUserId !== userToFollow)
+      );*/
+      setIsFollowing(true);
+    });
   };
 
   const likeHandler = () => {
@@ -152,6 +163,12 @@ const OpinionComponent = ({ element }) => {
       });
     }
   };
+
+  /* 
+  useEffect(() => {
+    console.log(following);
+    setIsFollowing(following.includes(id));
+  }, []);*/
 
   return (
     <div>
@@ -224,7 +241,7 @@ const OpinionComponent = ({ element }) => {
                   <Navbar.Brand className={classes.time}>
                     {getFriendlyTime()}
                   </Navbar.Brand>
-                  {!isOpinionFromCurrentUser && (
+                  {!isOpinionFromCurrentUser && !isFollowing && (
                     <Button
                       className={classes.time}
                       variant="secondary"
