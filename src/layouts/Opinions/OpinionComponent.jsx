@@ -26,7 +26,7 @@ import useDeleteImage from "../../hooks/use-delete-image";
 import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
 
-const OpinionComponent = ({ element }) => {
+const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
 
   const [likes, setLikes] = useState(element.likes);
@@ -94,18 +94,19 @@ const OpinionComponent = ({ element }) => {
           await deleteImage(imagePath);
         }
       }
+      onModify(opinion);
     }
     changeModal(setModifyModalShow);
   };
 
-  const DeleteOpinion = () => {
-    deleteHook(
+  const DeleteOpinion = async () => {
+    await deleteHook(
       "opinions",
       element.id,
       "Se eliminó la opinión",
       "Error al eliminar opinión"
     );
-    changeModal(setDeleteModalShow);
+    onDelete(element);
   };
 
   const ReportOpinion = () => {
@@ -208,7 +209,9 @@ const OpinionComponent = ({ element }) => {
                 <span className="visually-hidden">Cargando...</span>
               </Spinner>
             )}
-            {!votesLoading && <>{votesToString(likes.length - dislikes.length)}</>}
+            {!votesLoading && (
+              <>{votesToString(likes.length - dislikes.length)}</>
+            )}
           </div>
           <button
             className={`${classes.voteBtn} ${classes.dislike} ${
@@ -233,15 +236,21 @@ const OpinionComponent = ({ element }) => {
             <div className="d-inline-block align-middle mx-2">
               <span className="fw-bold">{name}</span>
               <br></br>
-              <span>{getFriendlyTime(publishedDate.toDate())}</span>
+              <span>
+                {getFriendlyTime(
+                  publishedDate?.toDate ? publishedDate.toDate() : publishedDate
+                )}
+              </span>
             </div>
-            <Button
-              className={classes.time}
-              variant="secondary"
-              onClick={followUser.bind(null, userId)}
-            >
-              Seguir
-            </Button>
+            {!isOpinionFromCurrentUser && (
+              <Button
+                className={classes.time}
+                variant="secondary"
+                onClick={followUser.bind(null, userId)}
+              >
+                Seguir
+              </Button>
+            )}
           </div>
           <div className="my-3">
             {description}

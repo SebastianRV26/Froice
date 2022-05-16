@@ -82,10 +82,18 @@ export const getFriendlyTime = (dateToConvert) => {
     return "Hace unos segundos";
   }
   if (secondsDiff < 3600) {
-    return `Hace ${Math.floor(secondsDiff / 60)} minutos`;
+    const value = Math.floor(secondsDiff / 60);
+    if (value === 1) {
+      return `Hace ${value} minuto`;
+    }
+    return `Hace ${value} minutos`;
   }
   if (secondsDiff < 86400) {
-    return `Hace ${Math.floor(secondsDiff / 3600)} horas`;
+    const value = Math.floor(secondsDiff / 3600);
+    if (value === 1) {
+      return `Hace ${value} hora`;
+    }
+    return `Hace ${value} horas`;
   }
   return dateToConvert.toDateString();
 };

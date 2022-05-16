@@ -31,6 +31,7 @@ const OpinionsView = (props) => {
   const opinionsType = props.type;
   const opinionsEmpty = opinions.length === 0;
   let lastDoc = useRef();
+  let isLoading = useRef(false);
 
   const opinionsQueryOptions = useMemo(() => {
     switch (opinionsType) {
@@ -51,7 +52,7 @@ const OpinionsView = (props) => {
       default:
         return null;
     }
-  }, [opinionsType]);
+  }, [opinionsType, params.userId]);
 
   const fetchData = useCallback(async () => {
     let q;
@@ -73,11 +74,44 @@ const OpinionsView = (props) => {
     });
   }, [opinionsQueryOptions]);
 
-  useEffect(() => fetchData(), [fetchData]);
+  const loadData = useCallback(() => {
+    if (isLoading.current) {
+      return;
+    }
+    isLoading.current = true;
+    fetchData().finally(() => (isLoading.current = false));
+  }, [fetchData]);
+
+  useEffect(() => {
+    loadData();
+  }, [fetchData, loadData]);
+
+  const onAdd = (opinionToAdd) => {
+    setOpinions((opinions) => {
+      return [opinionToAdd].concat(opinions);
+    });
+  };
+
+  const onModify = (opinionToModify) => {
+    setOpinions((opinions) => {
+      return opinions.map((opinion) => {
+        if (opinion.id === opinionToModify.id) {
+          return opinionToModify;
+        }
+        return opinion;
+      });
+    });
+  };
+
+  const onDelete = (opinionToDelete) => {
+    setOpinions((opinions) => {
+      return opinions.filter((opinion) => opinion.id !== opinionToDelete.id);
+    });
+  };
 
   return (
     <div className={`py-3 ${classes.container}`}>
-      {opinionsType === "home" && <CreateOpinion />}
+      {opinionsType === "home" && <CreateOpinion onAdd={onAdd} />}
       {opinionsEmpty && <WithoutData />}
       <InfiniteScroll
         dataLength={opinions.length}
@@ -97,7 +131,12 @@ const OpinionsView = (props) => {
         }
       >
         {opinions.map((opinion) => (
-          <OpinionComponent key={opinion.id} element={opinion} />
+          <OpinionComponent
+            key={opinion.id}
+            element={opinion}
+            onModify={onModify}
+            onDelete={onDelete}
+          />
         ))}
       </InfiniteScroll>
     </div>
