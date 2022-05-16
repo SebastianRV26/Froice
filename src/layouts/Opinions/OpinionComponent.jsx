@@ -21,6 +21,8 @@ import useUploadImage from "../../hooks/use-upload-image";
 import useCreateDocument from "../../hooks/use-create-document";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase.config";
+import { AiFillCaretUp, AiFillCaretDown, AiFillDelete } from "react-icons/ai";
+import { FaComment, FaPencilAlt } from "react-icons/fa";
 
 const OpinionComponent = ({ element }) => {
   let { id, name, publishedDate, description, userId } = element;
@@ -168,6 +170,7 @@ const OpinionComponent = ({ element }) => {
                   changeModal(setModifyModalShow);
                 }}
               >
+                <FaPencilAlt />
                 Modificar
               </Dropdown.Item>
             )}
@@ -178,6 +181,7 @@ const OpinionComponent = ({ element }) => {
                   changeModal(setDeleteModalShow);
                 }}
               >
+                <AiFillDelete />
                 Eliminar
               </Dropdown.Item>
             )}
@@ -194,9 +198,13 @@ const OpinionComponent = ({ element }) => {
           </DropdownButton>
           <div className={classes.container}>
             <ButtonGroup vertical>
-              <Button onClick={likeHandler.bind(null, id)}>+</Button>
+              <Button onClick={likeHandler.bind(null, id)}>
+                <AiFillCaretUp />
+              </Button>
               <Button disabled>{likes.length - dislikes.length}</Button>
-              <Button onClick={dislikeHandler.bind(null, id)}>-</Button>
+              <Button onClick={dislikeHandler.bind(null, id)}>
+                <AiFillCaretDown />
+              </Button>
             </ButtonGroup>
 
             <div className={classes.item2}>
@@ -237,7 +245,7 @@ const OpinionComponent = ({ element }) => {
                 }}
                 variant="primary"
               >
-                Comentar
+                <FaComment />
               </Button>
             </div>
           </div>
@@ -305,7 +313,6 @@ const OpinionComponent = ({ element }) => {
           </div>
         </CustomModal>
       )}
-
     </div>
   );
 };

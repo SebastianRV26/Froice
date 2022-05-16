@@ -3,6 +3,7 @@ import { Button, Card, Image } from "react-bootstrap";
 import classes from "./NewOpinion.module.css";
 import user from "../../../assets/icons/user.png";
 import ImageInput from "../../../ui/ImageInput";
+import { MdSend } from "react-icons/md";
 
 const NewOpinion = (props) => {
   const [message, setMessage] = useState(props.message);
@@ -10,7 +11,7 @@ const NewOpinion = (props) => {
   const [imageFile, setImageFile] = useState(""); //useState(isModify ? product.image : "");
 
   const notInModal = props.message === undefined;
-  const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario"
+  const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
 
   const send = (message) => {
     const messageChanged = message !== "" && message !== props.message;
@@ -42,7 +43,7 @@ const NewOpinion = (props) => {
             variant="primary"
             className={classes.send}
           >
-            Enviar
+            <MdSend />
           </Button>
         </div>
       </Card.Body>
