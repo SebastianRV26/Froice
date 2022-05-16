@@ -1,8 +1,6 @@
 .myrow {
   margin-top: 5px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 60%;
+  margin: auto;
 }
 
 .container {

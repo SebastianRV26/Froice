@@ -21,7 +21,7 @@ import { db } from "../../firebase/firebase.config";
 import OpinionComponent from "./OpinionComponent";
 import { Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-//import classes from "./OpinionsView.module.css";
+import classes from "./OpinionsView.module.css";
 
 const OpinionsView = (props) => {
   const [opinions, setOpinions] = useState([]);
@@ -76,7 +76,7 @@ const OpinionsView = (props) => {
   useEffect(() => fetchData(), [fetchData]);
 
   return (
-    <div className="py-3">
+    <div className={`py-3 ${classes.container}`}>
       {opinionsType === "home" && <CreateOpinion />}
       {opinionsEmpty && <WithoutData />}
       <InfiniteScroll
@@ -92,7 +92,7 @@ const OpinionsView = (props) => {
         }
         endMessage={
           <p className="text-center pt-2">
-            <b>Ya ha visto todas la opiniones</b>
+            <b>Ya ha visto todas las opiniones</b>
           </p>
         }
       >
