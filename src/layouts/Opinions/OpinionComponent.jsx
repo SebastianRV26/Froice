@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
@@ -19,45 +19,79 @@ import ConfirmationModal from "../../components/modals/ConfirmationModal/Confirm
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase/firebase.config";
+import { db, storage } from "../../firebase/firebase.config";
+import { getDownloadURL, ref } from "firebase/storage";
+import useDeleteImage from "../../hooks/use-delete-image";
+import { resizeImage } from "../../utils/utils";
+import useCreateDocument from "../../hooks/use-create-document";
 
 const OpinionComponent = ({ element }) => {
-  let { id, name, publishedDate, description, userId } = element;
+  let { id, name, publishedDate, description, userId, image } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
+  const [imagePreview, setImagePreview] = useState();
+
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
   const [reportModalShow, setReportModalShow] = useState(false);
+  const [descriptionMessage, setDescriptionMessage] = useState("");
   const [modifyOpinion] = useModify();
+  const [addDoc] = useCreateDocument();
   const [deleteHook] = useDelete();
-  const [uploadImage, loadingImage] = useUploadImage();
+  const [uploadImage] = useUploadImage();
+  const [deleteImage] = useDeleteImage();
 
   const authData = useAuth();
   const currentUserId = authData.user.uid;
   const isOpinionFromCurrentUser = currentUserId === userId;
+
+  useEffect(() => {
+    const fetchImageUrl = async (path) => {
+      const imageUrl = await getDownloadURL(ref(storage, path));
+      setImagePreview(imageUrl);
+    };
+
+    if (image) {
+      fetchImageUrl(image);
+    }
+  }, [image]);
 
   const changeModal = (setModal) => {
     setModal((prevModalShow) => !prevModalShow);
   };
 
   const Comment = () => {
-    console.log("Comentario");
     changeModal(setCommentModalShow);
   };
 
-  const ModifyOpinion = (newDescription, messageChanged) => {
+  const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
     if (messageChanged) {
-      let opinion = { ...element, description: newDescription };
-      modifyOpinion(
+      const imagePath = `opinions/${id}.jpg`;
+      let opinion = {
+        ...element,
+        description: newDescription,
+        image: imageFile ? imagePath : null,
+      };
+      await modifyOpinion(
         "opinions",
         element.id,
         opinion,
         "Opinión editada",
         "Error al editar opinión"
       );
-      console.log("Sí cambió");
+      if (imageFile !== image) {
+        if (imageFile) {
+          const resizedImage = await resizeImage({
+            file: imageFile,
+            maxSize: 1500,
+          });
+          await uploadImage(imagePath, resizedImage);
+        } else {
+          await deleteImage(imagePath);
+        }
+      }
     }
     changeModal(setModifyModalShow);
   };
@@ -73,7 +107,16 @@ const OpinionComponent = ({ element }) => {
   };
 
   const ReportOpinion = () => {
-    console.log("Reportar");
+    const data = {
+      reportedId: userId,
+      reportedName: name,
+      reporterId: currentUserId,
+      reporterName: authData.user.displayName,
+      opinionId: element.id,
+      opinionText: description,
+      description: descriptionMessage,
+    };
+    addDoc("reports", "Reporte", data);
     changeModal(setReportModalShow);
   };
 
@@ -219,6 +262,9 @@ const OpinionComponent = ({ element }) => {
               </Navbar>
 
               <Card.Text>{description}</Card.Text>
+              <div className="mb-2">
+                {image && <Image src={imagePreview} />}
+              </div>
               <Button
                 onClick={() => {
                   changeModal(setCommentModalShow);
@@ -252,10 +298,12 @@ const OpinionComponent = ({ element }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, messageChanged) => {
-              ModifyOpinion(newDescription, messageChanged);
+            onSend={(newDescription, imageFile, messageChanged) => {
+              ModifyOpinion(newDescription, imageFile, messageChanged);
             }}
             message={description}
+            image={image}
+            imagePreview={imagePreview}
           />
         </CustomModal>
       )}
@@ -273,15 +321,25 @@ const OpinionComponent = ({ element }) => {
       )}
 
       {/*Report Modal */}
+
       {reportModalShow && (
-        <ConfirmationModal
+        <CustomModal
           show={reportModalShow}
           title={"Reportar opinión"}
-          myButtonTitle="Reportar"
-          description={"Está seguro de que desea reportar esta opinión?"}
-          onConfirm={ReportOpinion}
           onHide={() => changeModal(setReportModalShow)}
-        />
+          onConfirm={ReportOpinion}
+          myButtonTitle={"Reportar"}
+        >
+          <div className="mx-2">
+            <p>Por Favor ingrese el motivo del reporte</p>
+            <textarea
+              placeholder={"ingrese el motivo"}
+              value={descriptionMessage}
+              onChange={(e) => setDescriptionMessage(e.target.value)}
+              className={classes.ta}
+            />
+          </div>
+        </CustomModal>
       )}
     </div>
   );

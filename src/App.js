@@ -1,7 +1,7 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./layouts/Login/Login";
-import AdminPage from "./layouts/admin/AdminView";
+import AdminPage from "./layouts/Admin/AdminView";
 import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
@@ -14,6 +14,8 @@ import UsersReports from "./layouts/UserReports/UsersReports";
 import AboutPage from "./layouts/About/AboutPage";
 import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";
+import SelectTags from "./layouts/SelectTags/SelectTags";
+import UsersEdit from "./layouts/Users/UsersEdit";
 
 function App() {
   return (
@@ -39,25 +41,24 @@ function App() {
           path="/forgot"
           element={<UnauthenticatedRoute component={ForgotPassword} />}
         />
-        <Route
-          path="/about"
-          element={<AboutPage/>}
-        />
-        {/*<Route path="/dashboard" element={<Dashboard />} />*/}
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/dashboard"
-          element={<OpinionsView />}
-          //element={<AuthenticatedRoute component={OpinionsView} />}
-        />
-        <Route path="/reports" element={<UsersReports />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+          element={<AuthenticatedRoute component={Dashboard} />}
+        >
+          <Route index element={<Navigate to="opinions" replace />} />
+          <Route path="opinions" element={<OpinionsView />} />
+          <Route path="reports" element={<UsersReports />} />
+          <Route path="profile" element={<UsersEdit />} />
+        </Route>
+        <Route path="/tags" element={<SelectTags />} />
         <Route
           path="/admin"
           element={
             <AuthenticatedRoute requieredRole={"admin"} component={AdminPage} />
           }
         >
-          <Route index element={<Users />} />
+          <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<Users />} />
           <Route path="reports" element={<Reports />} />
         </Route>

@@ -8,7 +8,7 @@ import { collection, orderBy, where } from "firebase/firestore";
 import useAuth from "../../hooks/use-auth";
 import { PaginationHelper } from "../../helpers/PaginationHelper";
 import { getDownloadURL, ref } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 //import classes from "./OpinionsView.module.css";
 
 const myOpinions = [
@@ -111,43 +111,7 @@ const OpinionsView = () => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
-        <Container fluid>
-          <Navbar.Brand>Froice</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll">
-            <Nav className="me-auto">
-              <Nav.Link
-                onClick={() => {
-                  handleOpinion("opinions"); // homeOpinions
-                }}
-              >
-                Inicio
-              </Nav.Link>
-              <Nav.Link
-                onClick={() => {
-                  handleOpinion("opinions"); // homeOpinions
-                }}
-              >
-                Explorar
-              </Nav.Link>
-              <Nav.Link href="#notifications">Notificaciones</Nav.Link>
-              <NavDropdown title="Cuenta" id="basic-nav-dropdown">
-                <NavDropdown.Item
-                  onClick={() => {
-                    handleOpinion(`opinions`, true); // myOpinions
-                  }}
-                >
-                  Mi Perfil
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={signOutHandler}>
-                  Cerrar sesión
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      
 
       <OpinionsTable data={opinions} />
     </>

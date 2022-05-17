@@ -11,7 +11,7 @@ const useUploadImage = () => {
     const promise = uploadBytes(storageRef, file).finally(() => setLoading(false));
 
     return toast.promise(promise, {
-      pending: "Subiendo image",
+      pending: "Subiendo imagen",
       success: "Imagen subida exitosamente",
       error: {
         render() {
