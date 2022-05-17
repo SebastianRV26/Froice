@@ -59,10 +59,10 @@ const RegisterConfirmation = () => {
             <br />
             <br />
 
-            <Button variant="link" className={classes.link} onClick={reSendConfirmation} >Resend email verification</Button>
+            <Button variant="link" className={classes.link} onClick={()=>reSendConfirmation()} >Resend email verification</Button>
             <br />
             <br />
-            <Button className={classes.registerConfirmationButton} onClick={verifyHandler} >Verify my email</Button>
+            <Button className={classes.registerConfirmationButton} onClick={()=>verifyHandler()} >Verify my email</Button>
             <img className={classes.registerConfirmationImageLeft} src={registerConfirmationLeft} alt={"rcl"}/>
             <img className={classes.registerConfirmationImageRigth} src={registerConfirmationRigth} alt={"lcl"}/>
         </div>
