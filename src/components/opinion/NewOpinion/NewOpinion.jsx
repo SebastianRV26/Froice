@@ -4,19 +4,21 @@ import classes from "./NewOpinion.module.css";
 import user from "../../../assets/icons/user.png";
 import ImageInput from "../../../ui/ImageInput";
 import { MdSend } from "react-icons/md";
+import AutocompleteInput from "../../../components/autocompleteInput/AutocompleteInput";
+
 
 const NewOpinion = (props) => {
   const [message, setMessage] = useState(props.message);
-  const [imagePreview, setImagePreview] = useState();
-  const [imageFile, setImageFile] = useState(""); //useState(isModify ? product.image : "");
+  const [imagePreview] = useState(props.imagePreview);
+  const [imageFile, setImageFile] = useState(props.image); //useState(isModify ? product.image : "");
 
   const notInModal = props.message === undefined;
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
 
   const send = (message) => {
-    const messageChanged = message !== "" && message !== props.message;
-    props.onSend(message, messageChanged);
-    setMessage("");
+    const descriptionChanged = message !== "" && message !== props.message;
+    const imageChanged = imageFile !== props.image;
+    props.onSend(message, imageFile, descriptionChanged || imageChanged);
   };
 
   return (
@@ -32,9 +34,14 @@ const NewOpinion = (props) => {
           />
         </div>
         <div>
+
+
+
           <div className={`${classes.image} my-2`}>
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
+
+          <AutocompleteInput/>
 
           <Button
             onClick={() => {

@@ -8,8 +8,7 @@ import useAuth from "../../hooks/use-auth";
 const UsersReports = () => {
   const authData = useAuth();
   const currentUserId = authData.user.uid;
-  console.log(currentUserId)
-  const [reportsCollection, setReportsCollection] = useState(
+  const [reportsCollection] = useState(
     collection(db, `users/${currentUserId}/reports`)
   );
 

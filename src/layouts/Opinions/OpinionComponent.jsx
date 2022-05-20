@@ -18,19 +18,24 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
-import useCreateDocument from "../../hooks/use-create-document";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase/firebase.config";
+import { db, storage } from "../../firebase/firebase.config";
+import { getDownloadURL, ref } from "firebase/storage";
+import useDeleteImage from "../../hooks/use-delete-image";
+import { resizeImage } from "../../utils/utils";
+import useCreateDocument from "../../hooks/use-create-document";
 import { AiFillCaretUp, AiFillCaretDown, AiFillDelete } from "react-icons/ai";
 import { FaComment, FaPencilAlt } from "react-icons/fa";
 
 const OpinionComponent = ({ element }) => {
-  let { id, name, publishedDate, description, userId } = element;
+  let { id, name, publishedDate, description, userId, image } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
   // const [following, setFollowing] = useState(element.following);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [imagePreview, setImagePreview] = useState();
+
   const [commentModalShow, setCommentModalShow] = useState(false);
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
@@ -39,32 +44,58 @@ const OpinionComponent = ({ element }) => {
   const [modifyOpinion] = useModify();
   const [addDoc] = useCreateDocument();
   const [deleteHook] = useDelete();
-  const [uploadImage, loadingImage] = useUploadImage();
+  const [uploadImage] = useUploadImage();
+  const [deleteImage] = useDeleteImage();
 
   const authData = useAuth();
   const currentUserId = authData.user.uid;
   const isOpinionFromCurrentUser = currentUserId === userId;
+
+  useEffect(() => {
+    const fetchImageUrl = async (path) => {
+      const imageUrl = await getDownloadURL(ref(storage, path));
+      setImagePreview(imageUrl);
+    };
+
+    if (image) {
+      fetchImageUrl(image);
+    }
+  }, [image]);
 
   const changeModal = (setModal) => {
     setModal((prevModalShow) => !prevModalShow);
   };
 
   const Comment = () => {
-    console.log("Comentario");
     changeModal(setCommentModalShow);
   };
 
-  const ModifyOpinion = (newDescription, messageChanged) => {
+  const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
     if (messageChanged) {
-      let opinion = { ...element, description: newDescription };
-      modifyOpinion(
+      const imagePath = `opinions/${id}.jpg`;
+      let opinion = {
+        ...element,
+        description: newDescription,
+        image: imageFile ? imagePath : null,
+      };
+      await modifyOpinion(
         "opinions",
         element.id,
         opinion,
         "Opinión editada",
         "Error al editar opinión"
       );
-      console.log("Sí cambió");
+      if (imageFile !== image) {
+        if (imageFile) {
+          const resizedImage = await resizeImage({
+            file: imageFile,
+            maxSize: 1500,
+          });
+          await uploadImage(imagePath, resizedImage);
+        } else {
+          await deleteImage(imagePath);
+        }
+      }
     }
     changeModal(setModifyModalShow);
   };
@@ -256,6 +287,9 @@ const OpinionComponent = ({ element }) => {
               </Navbar>
 
               <Card.Text>{description}</Card.Text>
+              <div className="mb-2">
+                {image && <Image src={imagePreview} />}
+              </div>
               <Button
                 onClick={() => {
                   changeModal(setCommentModalShow);
@@ -289,10 +323,12 @@ const OpinionComponent = ({ element }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, messageChanged) => {
-              ModifyOpinion(newDescription, messageChanged);
+            onSend={(newDescription, imageFile, messageChanged) => {
+              ModifyOpinion(newDescription, imageFile, messageChanged);
             }}
             message={description}
+            image={image}
+            imagePreview={imagePreview}
           />
         </CustomModal>
       )}
