@@ -8,9 +8,10 @@ import {
   DropdownButton,
   Image,
   Navbar,
+  Spinner,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
-import user from "../../assets/icons/user.png";
+import userImg from "../../assets/icons/user.png";
 import CustomModal from "../../components/modals/CustomModal/CustomModal";
 import NewOpinion from "../../components/opinion/NewOpinion/NewOpinion";
 import useModify from "../../hooks/use-modify";
@@ -22,12 +23,12 @@ import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase.config";
 import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
-import { resizeImage } from "../../utils/utils";
+import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
 import { AiFillCaretUp, AiFillCaretDown, AiFillDelete } from "react-icons/ai";
 import { FaComment, FaPencilAlt } from "react-icons/fa";
 
-const OpinionComponent = ({ element }) => {
+const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
 
   const [likes, setLikes] = useState(element.likes);
@@ -40,6 +41,7 @@ const OpinionComponent = ({ element }) => {
   const [modifyModalShow, setModifyModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
   const [reportModalShow, setReportModalShow] = useState(false);
+  const [votesLoading, setVoteLoading] = useState(false);
   const [descriptionMessage, setDescriptionMessage] = useState("");
   const [modifyOpinion] = useModify();
   const [addDoc] = useCreateDocument();
@@ -96,18 +98,19 @@ const OpinionComponent = ({ element }) => {
           await deleteImage(imagePath);
         }
       }
+      onModify(opinion);
     }
     changeModal(setModifyModalShow);
   };
 
-  const DeleteOpinion = () => {
-    deleteHook(
+  const DeleteOpinion = async () => {
+    await deleteHook(
       "opinions",
       element.id,
       "Se eliminó la opinión",
       "Error al eliminar opinión"
     );
-    changeModal(setDeleteModalShow);
+    onDelete(element);
   };
 
   const ReportOpinion = () => {
@@ -124,22 +127,6 @@ const OpinionComponent = ({ element }) => {
     changeModal(setReportModalShow);
   };
 
-  const getFriendlyTime = () => {
-    const currentDate = new Date();
-    const opinionDate = publishedDate.toDate();
-    const secondsDiff = (currentDate.getTime() - opinionDate.getTime()) / 1000;
-    if (secondsDiff < 60) {
-      return "Hace unos segundos";
-    }
-    if (secondsDiff < 3600) {
-      return "Hace unos minutos";
-    }
-    if (secondsDiff < 86400) {
-      return "Hace unas horas";
-    }
-    return opinionDate.toDateString();
-  };
-
   const followUser = (userToFollow) => {
     console.log("Follow " + userToFollow);
     const document = doc(db, "users", currentUserId);
@@ -154,45 +141,67 @@ const OpinionComponent = ({ element }) => {
   };
 
   const likeHandler = () => {
+    setVoteLoading(true);
+    const promises = [];
     if (likes.includes(currentUserId)) {
-      const document = doc(db, "opinions", id);
-      updateDoc(document, {
-        likes: arrayRemove(currentUserId),
-      }).then(() => {
-        setLikes(likes.filter((id) => id !== currentUserId));
-      });
+      promises.push(
+        updateDoc(doc(db, "opinions", id), {
+          likes: arrayRemove(currentUserId),
+        }).then(() => {
+          setLikes(likes.filter((id) => id !== currentUserId));
+        })
+      );
     } else {
       if (dislikes.includes(currentUserId)) {
-        dislikeHandler();
+        promises.push(
+          updateDoc(doc(db, "opinions", id), {
+            dislikes: arrayRemove(currentUserId),
+          }).then(() => {
+            setDislikes(dislikes.filter((id) => id !== currentUserId));
+          })
+        );
       }
-      const document = doc(db, "opinions", id);
-      updateDoc(document, {
-        likes: arrayUnion(currentUserId),
-      }).then(() => {
-        setLikes([currentUserId, ...likes]);
-      });
+      promises.push(
+        updateDoc(doc(db, "opinions", id), {
+          likes: arrayUnion(currentUserId),
+        }).then(() => {
+          setLikes([currentUserId, ...likes]);
+        })
+      );
     }
+    Promise.all(promises).finally(() => setVoteLoading(false));
   };
 
   const dislikeHandler = () => {
+    setVoteLoading(true);
+    const promises = [];
     if (dislikes.includes(currentUserId)) {
-      const document = doc(db, "opinions", id);
-      updateDoc(document, {
-        dislikes: arrayRemove(currentUserId),
-      }).then(() => {
-        setDislikes(dislikes.filter((id) => id !== currentUserId));
-      });
+      promises.push(
+        updateDoc(doc(db, "opinions", id), {
+          dislikes: arrayRemove(currentUserId),
+        }).then(() => {
+          setDislikes(dislikes.filter((id) => id !== currentUserId));
+        })
+      );
     } else {
       if (likes.includes(currentUserId)) {
-        likeHandler();
+        promises.push(
+          updateDoc(doc(db, "opinions", id), {
+            likes: arrayRemove(currentUserId),
+          }).then(() => {
+            setLikes(likes.filter((id) => id !== currentUserId));
+          })
+        );
       }
-      const document = doc(db, "opinions", id);
-      updateDoc(document, {
-        dislikes: arrayUnion(currentUserId),
-      }).then(() => {
-        setDislikes([currentUserId, ...dislikes]);
-      });
+      promises.push(
+        updateDoc(doc(db, "opinions", id), {
+          dislikes: arrayUnion(currentUserId),
+        }).then(() => {
+          setDislikes([currentUserId, ...dislikes]);
+        })
+      );
     }
+    Promise.all(promises).finally(() => setVoteLoading(false));
   };
 
   /* 
@@ -202,106 +211,122 @@ const OpinionComponent = ({ element }) => {
   }, []);*/
 
   return (
-    <div>
-      <Card className={classes.myrow}>
-        <Card.Body>
-          <DropdownButton
-            className={classes.options}
-            as={ButtonGroup}
-            title="..."
-            id="bg-vertical-dropdown-1"
+    <>
+      <div className={classes.opinionContainer}>
+        <div className={classes.voteContainer}>
+          <button
+            className={`${classes.voteBtn} ${classes.like} ${
+              likes.includes(currentUserId) ? classes.selected : ""
+            }`}
+            onClick={likeHandler.bind(null, id)}
           >
-            {isOpinionFromCurrentUser && (
-              <Dropdown.Item
-                eventKey="1"
-                onClick={() => {
-                  changeModal(setModifyModalShow);
-                }}
-              >
-                <FaPencilAlt />
-                Modificar
-              </Dropdown.Item>
+            <i className="fas fa-angle-up"></i>
+          </button>
+          <div className={classes.count}>
+            {votesLoading && (
+              <Spinner animation="grow" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </Spinner>
             )}
-            {isOpinionFromCurrentUser && (
-              <Dropdown.Item
-                eventKey="2"
-                onClick={() => {
-                  changeModal(setDeleteModalShow);
-                }}
-              >
-                <AiFillDelete />
-                Eliminar
-              </Dropdown.Item>
+            {!votesLoading && (
+              <>{votesToString(likes.length - dislikes.length)}</>
             )}
-            {!isOpinionFromCurrentUser && (
-              <Dropdown.Item
-                eventKey="3"
-                onClick={() => {
-                  changeModal(setReportModalShow);
-                }}
-              >
-                Reportar
-              </Dropdown.Item>
-            )}
-          </DropdownButton>
-          <div className={classes.container}>
-            <ButtonGroup vertical>
-              <Button onClick={likeHandler.bind(null, id)}>
-                <AiFillCaretUp />
-              </Button>
-              <Button disabled>{likes.length - dislikes.length}</Button>
-              <Button onClick={dislikeHandler.bind(null, id)}>
-                <AiFillCaretDown />
-              </Button>
-            </ButtonGroup>
-
-            <div className={classes.item2}>
-              <Navbar bg="light">
-                <Container className={classes.container}>
-                  <Navbar.Brand>
-                    <Image
-                      src={user}
-                      width="35"
-                      height="35"
-                      roundedCircle
-                      className="d-inline-block align-top" //{classes.image}
-                      alt="React Bootstrap logo"
-                    />
-                  </Navbar.Brand>
-                  <Navbar.Brand>{name}</Navbar.Brand>
-                  <Navbar.Brand className={classes.time}>
-                    {getFriendlyTime()}
-                  </Navbar.Brand>
-                  {!isOpinionFromCurrentUser && !isFollowing && (
-                    <Button
-                      className={classes.time}
-                      variant="secondary"
-                      onClick={() => {
-                        followUser(userId);
-                      }}
-                    >
-                      Seguir
-                    </Button>
-                  )}
-                </Container>
-              </Navbar>
-
-              <Card.Text>{description}</Card.Text>
-              <div className="mb-2">
-                {image && <Image src={imagePreview} />}
-              </div>
-              <Button
-                onClick={() => {
-                  changeModal(setCommentModalShow);
-                }}
-                variant="primary"
-              >
-                <FaComment />
-              </Button>
-            </div>
           </div>
-        </Card.Body>
-      </Card>
+          <button
+            className={`${classes.voteBtn} ${classes.dislike} ${
+              dislikes.includes(currentUserId) ? classes.selected : ""
+            }`}
+            onClick={dislikeHandler.bind(null, id)}
+          >
+            <i className="fas fa-angle-down"></i>
+          </button>
+        </div>
+        <div className="ps-4">
+          <div>
+            <Image
+              src={userImg}
+              width="42"
+              height="42"
+              roundedCircle
+              className="align-middle"
+              //className="d-inline-block align-top" //{classes.image}
+              alt="Imagen de perfil"
+            />
+            <div className="d-inline-block align-middle mx-2">
+              <span className="fw-bold">{name}</span>
+              <br></br>
+              <span>
+                {getFriendlyTime(
+                  publishedDate?.toDate ? publishedDate.toDate() : publishedDate
+                )}
+              </span>
+            </div>
+            {!isOpinionFromCurrentUser && (
+              <Button
+                className={classes.time}
+                variant="secondary"
+                onClick={followUser.bind(null, userId)}
+              >
+                Seguir
+              </Button>
+            )}
+          </div>
+          <div className="my-3">
+            {description}
+            {image && (
+              <div className={classes.opinionImage}>
+                <Image fluid src={imagePreview} />
+              </div>
+            )}
+          </div>
+          <div className={classes.actionButtons}>
+            <Button
+              variant="primary"
+              onClick={changeModal.bind(null, setCommentModalShow)}
+            >
+              Comentar
+            </Button>
+            <DropdownButton
+              className={classes.options}
+              as={ButtonGroup}
+              title="..."
+              id="bg-vertical-dropdown-1"
+              drop="up"
+            >
+              {isOpinionFromCurrentUser && (
+                <Dropdown.Item
+                  eventKey="1"
+                  onClick={() => {
+                    changeModal(setModifyModalShow);
+                  }}
+                >
+                  Modificar
+                </Dropdown.Item>
+              )}
+              {isOpinionFromCurrentUser && (
+                <Dropdown.Item
+                  eventKey="2"
+                  onClick={() => {
+                    changeModal(setDeleteModalShow);
+                  }}
+                >
+                  Eliminar
+                </Dropdown.Item>
+              )}
+              {!isOpinionFromCurrentUser && (
+                <Dropdown.Item
+                  eventKey="3"
+                  onClick={() => {
+                    changeModal(setReportModalShow);
+                  }}
+                >
+                  Reportar
+                </Dropdown.Item>
+              )}
+            </DropdownButton>
+          </div>
+        </div>
+      </div>
 
       {/*Commet Modal */}
       {commentModalShow && (
@@ -366,7 +391,7 @@ const OpinionComponent = ({ element }) => {
           </div>
         </CustomModal>
       )}
-    </div>
+    </>
   );
 };
 
