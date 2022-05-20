@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
-  Card,
-  Container,
   Dropdown,
   DropdownButton,
   Image,
-  Navbar,
   Spinner,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
@@ -25,8 +22,6 @@ import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
 import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
-import { AiFillCaretUp, AiFillCaretDown, AiFillDelete } from "react-icons/ai";
-import { FaComment, FaPencilAlt } from "react-icons/fa";
 
 const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
