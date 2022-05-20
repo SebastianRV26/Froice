@@ -44,10 +44,17 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route
           path="/dashboard"
-          element={<AuthenticatedRoute component={Dashboard} />}
+          element={
+            <AuthenticatedRoute requieredRole={"both"} component={Dashboard} />
+          }
         >
           <Route index element={<Navigate to="opinions" replace />} />
-          <Route path="opinions" element={<OpinionsView />} />
+          <Route path="opinions" element={<OpinionsView type="home" />} />
+          <Route
+            path="opinions/:userId"
+            element={<OpinionsView type="profile" />}
+          />
+          <Route path="explore" element={<OpinionsView type="explore" />} />
           <Route path="reports" element={<UsersReports />} />
           <Route path="profile" element={<UsersEdit />} />
         </Route>

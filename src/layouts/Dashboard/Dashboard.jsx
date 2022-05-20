@@ -22,18 +22,10 @@ const Dashboard = () => {
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav className="me-auto">
-              <Nav.Link
-                onClick={() => {
-                  //handleOpinion("opinions"); // homeOpinions
-                }}
-              >
+              <Nav.Link as={Link} to="/dashboard/opinions">
                 Inicio
               </Nav.Link>
-              <Nav.Link
-                onClick={() => {
-                  //handleOpinion("opinions"); // homeOpinions
-                }}
-              >
+              <Nav.Link as={Link} to="/dashboard/explore">
                 Explorar
               </Nav.Link>
               <Nav.Link href="#notifications">Notificaciones</Nav.Link>
