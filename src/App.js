@@ -29,6 +29,9 @@ function App() {
 
   // Subscribe to user data
   useEffect(() => {
+    if (!authData?.user?.uid || authData?.user?.uid === null) {
+      return;
+    }
     const unsubscribe = onSnapshot(
       doc(db, "users", authData.user.uid),
       (doc) => {
@@ -41,7 +44,7 @@ function App() {
       }
     );
     return unsubscribe;
-  }, [authData.user.uid]);
+  }, [authData?.user?.uid, dispatch]);
 
   return (
     <div className="App">

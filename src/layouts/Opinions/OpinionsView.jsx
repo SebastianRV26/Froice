@@ -22,11 +22,19 @@ import OpinionComponent from "./OpinionComponent";
 import { Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import classes from "./OpinionsView.module.css";
+import { useSelector } from "react-redux";
+import useAuth from "../../hooks/use-auth";
+
+const pageSize = 4;
 
 const OpinionsView = (props) => {
   const [opinions, setOpinions] = useState([]);
+  const [allOpinions, setAllOpinions] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const params = useParams();
+  const userData = useSelector((state) => state.user.userData);
+  const authData = useAuth();
+  const currentUserId = authData.user.uid;
 
   const opinionsType = props.type;
   const opinionsEmpty = opinions.length === 0;
@@ -35,19 +43,20 @@ const OpinionsView = (props) => {
 
   const opinionsQueryOptions = useMemo(() => {
     switch (opinionsType) {
-      case "explore":
       case "home":
+        return [collection(db, "opinions"), orderBy("publishedDate", "desc")];
+      case "explore":
         return [
           collection(db, "opinions"),
           orderBy("publishedDate", "desc"),
-          limit(5),
+          limit(pageSize),
         ];
       case "profile":
         return [
           collection(db, "opinions"),
           where("userId", "==", params.userId),
           orderBy("publishedDate", "desc"),
-          limit(5),
+          limit(pageSize),
         ];
       default:
         return null;
@@ -67,20 +76,38 @@ const OpinionsView = (props) => {
       return;
     }
     lastDoc.current = querySnapshot.docs[querySnapshot.docs.length - 1];
-    setOpinions((opinions) => {
-      return opinions.concat(
-        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    let results = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    if (opinionsType === "home") {
+      results = results.filter(
+        (data) =>
+          data.userId === currentUserId ||
+          userData?.following?.includes(data.userId)
       );
-    });
-  }, [opinionsQueryOptions]);
+      setOpinions(results.slice(0, pageSize));
+      setAllOpinions(results.slice(pageSize));
+    } else {
+      setOpinions((opinions) => {
+        return opinions.concat(results);
+      });
+    }
+  }, [opinionsQueryOptions, userData, currentUserId, opinionsType]);
 
   const loadData = useCallback(() => {
-    if (isLoading.current) {
+    if (isLoading.current || !userData) {
       return;
     }
     isLoading.current = true;
     fetchOpinionsData().finally(() => (isLoading.current = false));
-  }, [fetchOpinionsData]);
+  }, [fetchOpinionsData, userData]);
+
+  useEffect(() => {
+    setOpinions([]);
+    setHasMore(true);
+    lastDoc.current = null;
+  }, [opinionsType]);
 
   useEffect(() => {
     loadData();
@@ -109,13 +136,25 @@ const OpinionsView = (props) => {
     });
   };
 
+  const loadHomeData = useCallback(() => {
+    setTimeout(() => {
+      setOpinions((opinions) =>
+        opinions.concat(allOpinions.slice(0, pageSize))
+      );
+      setAllOpinions((allOpinions) => allOpinions.slice(pageSize));
+      if (allOpinions <= pageSize) {
+        setHasMore(false);
+      }
+    }, 300);
+  }, [allOpinions]);
+
   return (
     <div className={`py-3 ${classes.container}`}>
       {opinionsType === "home" && <CreateOpinion onAdd={onAdd} />}
       {opinionsEmpty && <WithoutData />}
       <InfiniteScroll
         dataLength={opinions.length}
-        next={loadData}
+        next={opinionsType === "home" ? loadHomeData : loadData}
         hasMore={hasMore}
         loader={
           <div className="text-center p-2">
