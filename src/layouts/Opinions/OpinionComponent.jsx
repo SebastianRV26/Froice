@@ -23,14 +23,13 @@ import useDeleteImage from "../../hooks/use-delete-image";
 import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
+const OpinionComponent = ({ element, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
-  // const [following, setFollowing] = useState(element.following);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [imagePreview, setImagePreview] = useState();
 
   const [commentModalShow, setCommentModalShow] = useState(false);
@@ -48,6 +47,7 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   const authData = useAuth();
   const currentUserId = authData.user.uid;
   const isOpinionFromCurrentUser = currentUserId === userId;
+  const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
     const fetchImageUrl = async (path) => {
@@ -124,15 +124,11 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   };
 
   const followUser = (userToFollow) => {
-    console.log("Follow " + userToFollow);
     const document = doc(db, "users", currentUserId);
     updateDoc(document, {
-      following: arrayUnion(userToFollow),
-    }).then(() => {
-      /*setFollowing(
-        following?.filter((currentUserId) => currentUserId !== userToFollow)
-      );*/
-      setIsFollowing(true);
+      following: userData?.following?.includes(userToFollow)
+        ? arrayRemove(userToFollow)
+        : arrayUnion(userToFollow),
     });
   };
 
@@ -200,12 +196,6 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
     Promise.all(promises).finally(() => setVoteLoading(false));
   };
 
-  /* 
-  useEffect(() => {
-    console.log(following);
-    setIsFollowing(following.includes(id));
-  }, []);*/
-
   return (
     <>
       <div className={classes.opinionContainer}>
@@ -262,14 +252,21 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
                 )}
               </span>
             </div>
-            {!isOpinionFromCurrentUser && (
+            {!isOpinionFromCurrentUser && userData && (
               <Button
                 className={classes.time}
                 variant="secondary"
                 onClick={followUser.bind(null, userId)}
               >
-                Seguir
+                {userData?.following?.includes(userId)
+                  ? "Dejar de seguir"
+                  : "Seguir"}
               </Button>
+            )}
+            {!isOpinionFromCurrentUser && !userData && (
+              <Spinner animation="grow" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </Spinner>
             )}
           </div>
           <div className="my-3">

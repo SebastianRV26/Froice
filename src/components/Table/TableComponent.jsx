@@ -1,5 +1,4 @@
-import { endAt, getDocs, limit, query, startAt } from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Button from "react-bootstrap/Button";
 import classes from "./TableComponent.module.css";
 import Placeholder from "react-bootstrap/Placeholder";

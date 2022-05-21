@@ -54,7 +54,7 @@ const OpinionsView = (props) => {
     }
   }, [opinionsType, params.userId]);
 
-  const fetchData = useCallback(async () => {
+  const fetchOpinionsData = useCallback(async () => {
     let q;
     if (!lastDoc.current) {
       q = query(...opinionsQueryOptions);
@@ -79,12 +79,12 @@ const OpinionsView = (props) => {
       return;
     }
     isLoading.current = true;
-    fetchData().finally(() => (isLoading.current = false));
-  }, [fetchData]);
+    fetchOpinionsData().finally(() => (isLoading.current = false));
+  }, [fetchOpinionsData]);
 
   useEffect(() => {
     loadData();
-  }, [fetchData, loadData]);
+  }, [fetchOpinionsData, loadData]);
 
   const onAdd = (opinionToAdd) => {
     setOpinions((opinions) => {

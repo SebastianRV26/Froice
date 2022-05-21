@@ -16,8 +16,33 @@ import Users from "./layouts/Users/Users";
 import Reports from "./layouts/Reports/Reports";
 import SelectTags from "./layouts/SelectTags/SelectTags";
 import UsersEdit from "./layouts/Users/UsersEdit";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "./firebase/firebase.config";
+import useAuth from "./hooks/use-auth";
+import { userActions } from "./store/user-reducer";
 
 function App() {
+  const dispatch = useDispatch();
+  const authData = useAuth();
+
+  // Subscribe to user data
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "users", authData.user.uid),
+      (doc) => {
+        const data = doc.data();
+        if (data) {
+          dispatch(userActions.setUserData({ id: doc.id, ...data }));
+        } else {
+          dispatch(userActions.setUserData(undefined));
+        }
+      }
+    );
+    return unsubscribe;
+  }, [authData.user.uid]);
+
   return (
     <div className="App">
       <Routes>
