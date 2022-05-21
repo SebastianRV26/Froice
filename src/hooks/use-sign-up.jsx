@@ -14,17 +14,24 @@ const useSignUp = () => {
   const [loading, setLoading] = useState(false);
   const [sendConfirmationEmail] = useConfirmationEmail();
 
-  let handleOnSucess = async (email,password) => {
+  let handleOnSucess = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
     await sendConfirmationEmail(auth.currentUser);
     navigate(`/registerConfirmation`);
-  } 
+  };
 
-  const signUp = (email, password,firstName, lastName,phone) => {
+  const signUp = (email, password, firstName, lastName, phone) => {
     setLoading(true);
-    
-    const promise = signUpFunction({email,password,firstName,lastName,phone});
-    toast.promise(promise,{
+    const following = [];
+    const promise = signUpFunction({
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+      following,
+    });
+    toast.promise(promise, {
       pending: {
         render() {
           return "Sending petition";
@@ -32,7 +39,7 @@ const useSignUp = () => {
       },
       success: {
         render() {
-          handleOnSucess(email,password);
+          handleOnSucess(email, password);
           return "Success registered";
         },
       },
@@ -55,5 +62,3 @@ const useSignUp = () => {
 };
 
 export default useSignUp;
-
-

@@ -29,6 +29,8 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
+  // const [following, setFollowing] = useState(element.following);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [imagePreview, setImagePreview] = useState();
 
   const [commentModalShow, setCommentModalShow] = useState(false);
@@ -123,6 +125,15 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
 
   const followUser = (userToFollow) => {
     console.log("Follow " + userToFollow);
+    const document = doc(db, "users", currentUserId);
+    updateDoc(document, {
+      following: arrayUnion(userToFollow),
+    }).then(() => {
+      /*setFollowing(
+        following?.filter((currentUserId) => currentUserId !== userToFollow)
+      );*/
+      setIsFollowing(true);
+    });
   };
 
   const likeHandler = () => {
@@ -188,6 +199,12 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
     }
     Promise.all(promises).finally(() => setVoteLoading(false));
   };
+
+  /* 
+  useEffect(() => {
+    console.log(following);
+    setIsFollowing(following.includes(id));
+  }, []);*/
 
   return (
     <>
