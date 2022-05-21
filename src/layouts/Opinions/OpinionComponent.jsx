@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
-  Card,
-  Container,
   Dropdown,
   DropdownButton,
   Image,
-  Navbar,
   Spinner,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
@@ -25,6 +22,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
 import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
+import { Link } from "react-router-dom";
 
 const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
@@ -234,7 +232,12 @@ const OpinionComponent = ({ element, refresh, onModify, onDelete }) => {
               alt="Imagen de perfil"
             />
             <div className="d-inline-block align-middle mx-2">
-              <span className="fw-bold">{name}</span>
+              <Link
+                className="fw-bold"
+                to={`/dashboard/opinions/${currentUserId}`}
+              >
+                {name}
+              </Link>
               <br></br>
               <span>
                 {getFriendlyTime(

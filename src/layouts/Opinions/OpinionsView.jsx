@@ -115,7 +115,7 @@ const OpinionsView = (props) => {
       {opinionsEmpty && <WithoutData />}
       <InfiniteScroll
         dataLength={opinions.length}
-        next={fetchData}
+        next={loadData}
         hasMore={hasMore}
         loader={
           <div className="text-center p-2">
