@@ -74,3 +74,36 @@ export const resizeImage = (settings) => {
     reader.readAsDataURL(file);
   });
 };
+
+export const getFriendlyTime = (dateToConvert) => {
+  const currentDate = new Date();
+  const secondsDiff = (currentDate.getTime() - dateToConvert.getTime()) / 1000;
+  if (secondsDiff < 60) {
+    return "Hace unos segundos";
+  }
+  if (secondsDiff < 3600) {
+    const value = Math.floor(secondsDiff / 60);
+    if (value === 1) {
+      return `Hace ${value} minuto`;
+    }
+    return `Hace ${value} minutos`;
+  }
+  if (secondsDiff < 86400) {
+    const value = Math.floor(secondsDiff / 3600);
+    if (value === 1) {
+      return `Hace ${value} hora`;
+    }
+    return `Hace ${value} horas`;
+  }
+  return dateToConvert.toDateString();
+};
+
+export const votesToString = (votes) => {
+  if (votes > -1000 && votes < 1000) {
+    return votes.toString();
+  }
+  if (votes > -1_000_000 && votes < 1_000_000) {
+    return `${(votes / 1000).toFixed(1)}K`;
+  }
+  return `${(votes / 1_000_000).toFixed(1)}M`;
+};

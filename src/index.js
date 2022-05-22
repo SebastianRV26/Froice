@@ -6,13 +6,17 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import FirebaseAuthProvider from "./store/auth-context";
 import { ToastContainer } from "react-toastify";
+import store from "./store";
+import { Provider } from "react-redux";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <FirebaseAuthProvider>
-        <App />
-        <ToastContainer />
+        <Provider store={store}>
+          <App />
+          <ToastContainer />
+        </Provider>
       </FirebaseAuthProvider>
     </BrowserRouter>
   </React.StrictMode>,

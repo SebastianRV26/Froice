@@ -30,16 +30,16 @@ const WorkerCards = ({ workers }) => {
                   <br />
                   <Button
                     className={classes.right}
-                    onClick={() => {
-                      openUrl(`https://github.com/${el.github}`);
-                    }}
+                    as="a"
+                    href={`https://github.com/${el.github}`}
+                    target="_blank"
                   >
                     GitHub
                   </Button>
                   <Button
-                    onClick={() => {
-                      openUrl(`https://www.linkedin.com/in/${el.linkedin}/`);
-                    }}
+                    as="a"
+                    href={`https://www.linkedin.com/in/${el.linkedin}/`}
+                    target="_blank"
                   >
                     LinkedIn
                   </Button>

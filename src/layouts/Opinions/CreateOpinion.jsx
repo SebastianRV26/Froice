@@ -7,7 +7,7 @@ import useCreateDocument from "../../hooks/use-create-document";
 import useUploadImage from "../../hooks/use-upload-image";
 import { resizeImage } from "../../utils/utils";
 
-const CreateOpinion = () => {
+const CreateOpinion = (props) => {
   const authData = useAuth();
   const [addDoc] = useCreateDocument();
   const [uploadImage] = useUploadImage();
@@ -36,7 +36,7 @@ const CreateOpinion = () => {
         });
         await uploadImage(imagePath, resizedImage);
       }
-      // Refresh
+      props.onAdd({ id: opinionRef.id, ...opinion });
     }
   };
 

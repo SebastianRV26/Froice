@@ -1,38 +1,79 @@
-.myrow {
-  margin-left: auto;
-  margin-right: auto;
-  width: 60%;
-  margin-top: 5px;
-}
-
-.container {
-  display: inline-flex;
-  align-items: center;
-}
-
-.item2 {
-  margin-left: 10px;
-}
-
-.image {
-  width: 35px;
-}
-
-.time {
-  color: gray !important;
-  font-size: small;
-}
-
-.options {
-  float: right !important;
-}
-
-.container {
-  justify-content: left !important;
-}
-
 .ta {
   width: 100%;
   height: auto;
   resize: none;
+}
+
+.opinionContainer {
+  display: flex;
+  padding: 16px;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  margin: auto;
+  margin-top: 5px;
+}
+
+.voteContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.5rem;
+  min-width: 5rem;
+  padding-right: 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.voteBtn {
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: inherit;
+}
+
+.voteBtn.like:hover {
+  background-color: #00c8517c;
+  color: #007e33;
+}
+
+.voteBtn.like:active {
+  background-color: #00c8519f;
+  color: #007e33;
+}
+
+.voteBtn.like.selected {
+  background-color: #00c8517c;
+  color: #007e33;
+}
+
+.voteBtn.dislike:hover {
+  background-color: #ff44447c;
+  color: #cc0000;
+}
+
+.voteBtn.dislike:active {
+  background-color: #ff44449f;
+  color: #cc0000;
+}
+
+.voteBtn.dislike.selected {
+  background-color: #ff44449f;
+  color: #cc0000;
+}
+
+.count {
+  height: 2rem;
+}
+
+.opinionImage {
+  max-width: 70%;
+  text-align: center;
+}
+
+.actionButtons {
+  display: grid;
+  grid-column-gap: 10px;
+  grid-auto-flow: column;
+  width: fit-content;
 }
