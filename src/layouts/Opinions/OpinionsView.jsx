@@ -38,6 +38,7 @@ const OpinionsView = (props) => {
       case "home":
         return [
           collection(db, "opinions"),
+          where("parent", "==", null),
           orderBy("publishedDate", "desc"),
           limit(5),
         ];
@@ -48,6 +49,13 @@ const OpinionsView = (props) => {
           orderBy("publishedDate", "desc"),
           limit(5),
         ];
+      case "comments":
+        return[
+          collection(db, "opinions"),
+          where("parent", "==", params.parentId),
+          orderBy("publishedDate", "desc"),
+          limit(5),
+        ]
       default:
         return null;
     }

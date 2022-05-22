@@ -51,8 +51,12 @@ function App() {
           <Route index element={<Navigate to="opinions" replace />} />
           <Route path="opinions" element={<OpinionsView type="home" />} />
           <Route
-            path="opinions/:userId"
+            path="opinions/users/:userId"
             element={<OpinionsView type="profile" />}
+          />
+          <Route
+            path="opinions/comments/:parentId"
+            element={<OpinionsView type="comments" />}
           />
           <Route path="explore" element={<OpinionsView type="explore" />} />
           <Route path="reports" element={<UsersReports />} />
