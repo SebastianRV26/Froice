@@ -12,7 +12,7 @@ const CreateOpinion = (props) => {
   const [addDoc] = useCreateDocument();
   const [uploadImage] = useUploadImage();
 
-  const send = async (description, imageFile, messageChanged) => {
+  const send = async (description, imageFile, messageChanged, urls) => {
     if (messageChanged) {
       const opinionRef = doc(collection(db, "opinions"));
 
@@ -27,6 +27,7 @@ const CreateOpinion = (props) => {
         dislikes: [],
         publishedDate: new Date(),
         image: imagePath,
+        urls,
       };
       await addDoc("opinions", "Opinión", opinion, opinionRef);
       if (imageFile) {
