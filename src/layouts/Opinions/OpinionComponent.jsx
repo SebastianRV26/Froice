@@ -16,7 +16,13 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase.config";
 import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
@@ -24,6 +30,7 @@ import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
   let { id, name, publishedDate, description, userId, image } = element;
@@ -64,8 +71,33 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     setModal((prevModalShow) => !prevModalShow);
   };
 
-  const Comment = () => {
-    changeModal(setCommentModalShow);
+  const Comment = async (description, imageFile, messageChanged) => {
+    if (messageChanged) {
+      const opinionRef = doc(collection(db, "opinions"));
+
+      const name = authData.user.displayName;
+      const userId = authData.user.uid;
+      const imagePath = imageFile ? `opinions/${opinionRef.id}.jpg` : null;
+      const opinion = {
+        name,
+        userId,
+        description,
+        likes: [],
+        dislikes: [],
+        parent: element.id,
+        publishedDate: new Date(),
+        image: imagePath,
+      };
+      await addDoc("opinions", "Opinión", opinion, opinionRef);
+      if (imageFile) {
+        const resizedImage = await resizeImage({
+          file: imageFile,
+          maxSize: 1500,
+        });
+        await uploadImage(imagePath, resizedImage);
+      }
+      setCommentModalShow(false);
+    }
   };
 
   const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
@@ -241,7 +273,7 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
             <div className="d-inline-block align-middle mx-2">
               <Link
                 className="fw-bold"
-                to={`/dashboard/opinions/${currentUserId}`}
+                to={`/dashboard/opinions/users/${currentUserId}`}
               >
                 {name}
               </Link>
@@ -283,6 +315,13 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
               onClick={changeModal.bind(null, setCommentModalShow)}
             >
               Comentar
+            </Button>
+            <Button
+              as={Link}
+              to={`/dashboard/opinions/comments/${element.id}`}
+              variant="primary"
+            >
+              Ver comentarios
             </Button>
             <DropdownButton
               className={classes.options}

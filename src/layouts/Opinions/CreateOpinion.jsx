@@ -25,6 +25,7 @@ const CreateOpinion = (props) => {
         description,
         likes: [],
         dislikes: [],
+        parent: null,
         publishedDate: new Date(),
         image: imagePath,
       };
