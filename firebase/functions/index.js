@@ -22,6 +22,7 @@ exports.signUp = functions.https.onCall(async (data) => {
       email: email,
       name: data.firstName + " " + data.lastName,
       phoneNumber: "+506" + data.phone,
+      photoURL: user.photoURL,
     };
     await admin.firestore().collection("users").doc(user.uid).set(userData);
   } catch (error) {
@@ -36,6 +37,7 @@ exports.createUser = functions.auth.user().onCreate(async (user) => {
     email: user.email,
     name: user.displayName,
     phoneNumber: user.phoneNumber,
+    photoURL: user.photoURL,
   };
   const claimsPromise = admin.auth().setCustomUserClaims(user.uid, {
     role: "user",
@@ -96,4 +98,42 @@ exports.onFollow = functions.firestore
       );
     }
     return Promise.all(promises);
+  });
+
+exports.onOpinionCreated = functions.firestore
+  .document("opinions/{opinionId}")
+  .onCreate((snap, context) => {
+    const newComment = snap.data();
+    if (!newComment.parent) {
+      return null;
+    }
+
+    const parentCommentRef = admin
+      .firestore()
+      .collection("opinions")
+      .doc(newComment.parent);
+    return admin.firestore().runTransaction(async (transaction) => {
+      const parentCommentDoc = await transaction.get(parentCommentRef);
+      if (parentCommentDoc.empty) {
+        return null;
+      }
+
+      // Ignore the notification if it's the same user
+      if (newComment.userId === parentCommentDoc.data().userId) {
+        return null;
+      }
+
+      return admin
+        .firestore()
+        .collection("users")
+        .doc(parentCommentDoc.data().userId)
+        .collection("notifications")
+        .doc(generateKey(newComment.userId + context.eventId))
+        .set({
+          userId: newComment.userId,
+          name: newComment.name,
+          action: "comment",
+          date: new Date(),
+        });
+    });
   });

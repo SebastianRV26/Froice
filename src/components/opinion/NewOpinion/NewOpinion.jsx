@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Button, Card, Form, Image } from "react-bootstrap";
 import classes from "./NewOpinion.module.css";
-import user from "../../../assets/icons/user.png";
+import defUserImg from "../../../assets/icons/user.png";
 import ImageInput from "../../../ui/ImageInput";
 import { MdSend } from "react-icons/md";
 import AutocompleteInput from "../../../components/autocompleteInput/AutocompleteInput";
 import CustomModal from "../../modals/CustomModal/CustomModal";
 import { AiOutlineUser, AiOutlineLink } from "react-icons/ai";
+import { useSelector } from "react-redux";
 
 const NewOpinion = (props) => {
   const [message, setMessage] = useState(props.message ? props.message : "");
@@ -17,6 +18,7 @@ const NewOpinion = (props) => {
   const [url, setUrl] = useState("");
   const [urls, setUrls] = useState([]);
 
+  const userData = useSelector((state) => state.user.userData);
   const notInModal = props.message === undefined;
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
 
@@ -42,7 +44,11 @@ const NewOpinion = (props) => {
     <Card className={notInModal && classes.myrow}>
       <Card.Body>
         <div className={classes.container}>
-          <Image src={user} roundedCircle className={classes.image} />
+          <Image
+            src={userData?.photoURL ? userData.photoURL : defUserImg}
+            roundedCircle
+            className={classes.image}
+          />
           <textarea
             placeholder={hint}
             value={message}

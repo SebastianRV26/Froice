@@ -8,7 +8,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
-import userImg from "../../assets/icons/user.png";
+import defUserImg from "../../assets/icons/user.png";
 import CustomModal from "../../components/modals/CustomModal/CustomModal";
 import NewOpinion from "../../components/opinion/NewOpinion/NewOpinion";
 import useModify from "../../hooks/use-modify";
@@ -32,7 +32,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
-  let { id, name, publishedDate, description, userId, image, urls } = element;
+  let { id, name, publishedDate, description, userId, image, urls, userPhoto } =
+    element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
@@ -287,7 +288,7 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
         <div className="ps-4">
           <div>
             <Image
-              src={userImg}
+              src={userPhoto ? userPhoto : defUserImg}
               width="42"
               height="42"
               roundedCircle
