@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const { arrayLeftOuterJoin, generateKey } = require("./utils");
 
 admin.initializeApp();
 
@@ -66,4 +67,33 @@ exports.deleteUser = functions.firestore
   .document("users/{userID}")
   .onDelete((snap, context) => {
     return admin.auth().deleteUser(snap.id);
+  });
+
+exports.onFollow = functions.firestore
+  .document("users/{userID}")
+  .onUpdate((change, context) => {
+    const newFollowing = change.after.data().following;
+    const previousFollowing = change.before.data().following;
+
+    // Se quieren solo los nuevos followers que se han agregado a la lista
+    // Para eso se puede hacer algo como un left outer join de ambas listas
+    const following = arrayLeftOuterJoin(previousFollowing, newFollowing);
+    const promises = [];
+    for (let follow of following) {
+      promises.push(
+        admin
+          .firestore()
+          .collection("users")
+          .doc(follow)
+          .collection("notifications")
+          .doc(generateKey(change.after.id + context.eventId))
+          .set({
+            userId: change.after.id,
+            name: change.after.data().name,
+            action: "following",
+            date: new Date(),
+          })
+      );
+    }
+    return Promise.all(promises);
   });
