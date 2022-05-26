@@ -241,13 +241,13 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
       const word = words[i];
       if (word.includes("@")) {
         words[i] = (
-          <a href={`${urls[j]}`} rel="noreferrer" target="_blank">
+          <a key={i} href={`${urls[j]}`} rel="noreferrer" target="_blank">
             {word}
           </a>
         );
         j++;
       } else {
-        words[i] = <p>{word}</p>;
+        words[i] = <p key={i}>{word}</p>;
       }
     }
     setDescriptionToShow(words);
