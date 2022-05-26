@@ -77,3 +77,8 @@
   grid-auto-flow: column;
   width: fit-content;
 }
+
+.descriptionContainer {
+  display: flex;
+  gap: 2px;
+}

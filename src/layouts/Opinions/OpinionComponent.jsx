@@ -30,10 +30,9 @@ import { getFriendlyTime, resizeImage, votesToString } from "../../utils/utils";
 import useCreateDocument from "../../hooks/use-create-document";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
-  let { id, name, publishedDate, description, userId, image } = element;
+  let { id, name, publishedDate, description, userId, image, urls } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
@@ -55,6 +54,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
   const currentUserId = authData.user.uid;
   const isOpinionFromCurrentUser = currentUserId === userId;
   const userData = useSelector((state) => state.user.userData);
+
+  const [descriptionToShow, setDescriptionToShow] = useState([]);
 
   useEffect(() => {
     const fetchImageUrl = async (path) => {
@@ -100,7 +101,12 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     }
   };
 
-  const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
+  const ModifyOpinion = async (
+    newDescription,
+    imageFile,
+    messageChanged,
+    urls
+  ) => {
     if (messageChanged) {
       const imagePath = `opinions/${id}.jpg`;
       let opinion = {
@@ -228,6 +234,25 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     Promise.all(promises).finally(() => setVoteLoading(false));
   };
 
+  useEffect(() => {
+    const words = description.split(" ");
+    let j = 0;
+    for (let i in words) {
+      const word = words[i];
+      if (word.includes("@")) {
+        words[i] = (
+          <a href={`${urls[j]}`} rel="noreferrer" target="_blank">
+            {word}
+          </a>
+        );
+        j++;
+      } else {
+        words[i] = <p>{word}</p>;
+      }
+    }
+    setDescriptionToShow(words);
+  }, []);
+
   return (
     <>
       <div className={classes.opinionContainer}>
@@ -302,7 +327,9 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
             )}
           </div>
           <div className="my-3">
-            {description}
+            <div className={classes.descriptionContainer}>
+              {descriptionToShow}
+            </div>
             {image && (
               <div className={classes.opinionImage}>
                 <Image fluid src={imagePreview} />
@@ -385,8 +412,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, imageFile, messageChanged) => {
-              ModifyOpinion(newDescription, imageFile, messageChanged);
+            onSend={(newDescription, imageFile, messageChanged, urls) => {
+              ModifyOpinion(newDescription, imageFile, messageChanged, urls);
             }}
             message={description}
             image={image}
