@@ -9,7 +9,7 @@ const AuthenticatedRoute = ({ component: RouteComponent, requieredRole }) => {
   // Primero ver si está autenticado, sino vayase al login
   if (isAuthenticated) {
     // Segundo es ver si el correo está verificado, sino esta verificado mandelo al verificar
-    if (location.pathname === "/verify-email") {
+    if (location.pathname === "/registerConfirmation") {
       if (authData.user.emailVerified) {
         <Navigate to="/dashboard" replace={true} />;
       } else {
@@ -23,7 +23,7 @@ const AuthenticatedRoute = ({ component: RouteComponent, requieredRole }) => {
       // Sino cumple con los requisitos llevarlo a la home page
       <Navigate to="/dashboard" replace={true} />;
     } else {
-      return <Navigate to="/verify-email" replace={true} />;
+      return <Navigate to="/registerConfirmation" replace={true} />;
     }
   }
 

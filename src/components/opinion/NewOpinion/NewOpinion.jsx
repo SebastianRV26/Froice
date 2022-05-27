@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { Button, Card, Image } from "react-bootstrap";
 import classes from "./NewOpinion.module.css";
 import user from "../../../assets/icons/user.png";
@@ -8,6 +8,8 @@ import AutocompleteInput from "../../../components/autocompleteInput/Autocomplet
 
 
 const NewOpinion = (props) => {
+  const ref = useRef();
+  const [value, setValue] = useState({formatted_address:''});
   const [message, setMessage] = useState(props.message);
   const [imagePreview] = useState(props.imagePreview);
   const [imageFile, setImageFile] = useState(props.image); //useState(isModify ? product.image : "");
@@ -18,8 +20,16 @@ const NewOpinion = (props) => {
   const send = (message) => {
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-    props.onSend(message, imageFile, descriptionChanged || imageChanged);
+    
+    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address??'');
+    setValue({formatted_address:''});
+    console.log(ref.current.value);
+    ref.current.value = '';
+    console.log(ref.current.value);
   };
+
+  
+
 
   return (
     <Card className={notInModal && classes.myrow}>
@@ -41,7 +51,7 @@ const NewOpinion = (props) => {
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
 
-          <AutocompleteInput/>
+          <AutocompleteInput ref={ref} value={value} setValue={setValue}/>
 
           <Button
             onClick={() => {
