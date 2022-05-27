@@ -26,6 +26,8 @@ const NewOpinion = (props) => {
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
     props.onSend(message, imageFile, descriptionChanged || imageChanged, urls);
+    setUrls([]);
+    setMessage("");
   };
 
   const changeModal = (setModal) => {
