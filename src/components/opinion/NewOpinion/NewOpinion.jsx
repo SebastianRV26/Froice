@@ -38,21 +38,11 @@ const NewOpinion = (props) => {
     setLista([]);
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-<<<<<<< HEAD
     setValue({ formatted_address: "" });
     console.log(ref.current.value);
     ref.current.value = "";
     console.log(ref.current.value);
-    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address ?? "", urls);
-=======
-    props.onSend(
-      message,
-      imageFile,
-      descriptionChanged || imageChanged,
-      urls,
-      lista
-    );
->>>>>>> 4422847b00ef2da0a3dc00b1a9345a43b71ba4cc
+    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address ?? "", urls,lista);
     setUrls([]);
     setMessage("");
   };
@@ -90,17 +80,10 @@ const NewOpinion = (props) => {
           <div className={`${classes.image} my-2`}>
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
-<<<<<<< HEAD
           
           <div className={classes.buttonsContainer}>
             <AutocompleteInput ref={ref} value={value} setValue={setValue} />
             <Button className={classes.tagButton} onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
-=======
-
-          <div className={`${classes.buttonsContainer} mt-4`}>
-            <AutocompleteInput />
-            <Button onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
->>>>>>> 4422847b00ef2da0a3dc00b1a9345a43b71ba4cc
               @
             </Button>
           </div>
