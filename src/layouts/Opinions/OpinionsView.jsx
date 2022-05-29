@@ -10,6 +10,7 @@ import WithoutData from "../../ui/WithoutData";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
   collection,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -20,7 +21,7 @@ import {
 import { db } from "../../firebase/firebase.config";
 import OpinionComponent from "./OpinionComponent";
 import { Spinner } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./OpinionsView.module.css";
 import { useSelector } from "react-redux";
 import useAuth from "../../hooks/use-auth";
@@ -40,6 +41,8 @@ const OpinionsView = (props) => {
   const opinionsEmpty = opinions.length === 0;
   let lastDoc = useRef();
   let isLoading = useRef(false);
+
+  const navigate = useNavigate();
 
   const opinionsQueryOptions = useMemo(() => {
     switch (opinionsType) {
@@ -160,6 +163,14 @@ const OpinionsView = (props) => {
       }
     }, 300);
   }, [allOpinions]);
+
+  useEffect(() => {
+    if (userData) {
+      if (!userData?.userTags) {
+        navigate("/tags");
+      }
+    }
+  }, [userData]);
 
   return (
     <div className={`py-3 ${classes.container}`}>
