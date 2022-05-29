@@ -1,0 +1,1 @@
+export const tags = ["carros","animales","comida","deportes"]

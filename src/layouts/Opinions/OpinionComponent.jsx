@@ -27,7 +27,7 @@ import useCreateDocument from "../../hooks/use-create-document";
 import { useNavigate } from "react-router-dom";
 
 const OpinionComponent = ({ element }) => {
-  let { id, name, publishedDate, description, userId, image } = element;
+  let { id, name, publishedDate, description, userId, image, tags } = element;
   let navegate = useNavigate();
 
   const [likes, setLikes] = useState(element.likes);
@@ -93,12 +93,13 @@ const OpinionComponent = ({ element }) => {
     }
   };
 
-  const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
+  const ModifyOpinion = async (newDescription, imageFile, messageChanged,newTagList) => {
     if (messageChanged) {
       const imagePath = `opinions/${id}.jpg`;
       let opinion = {
         ...element,
         description: newDescription,
+        tags: newTagList,
         image: imageFile ? imagePath : null,
       };
       await modifyOpinion(
@@ -287,7 +288,11 @@ const OpinionComponent = ({ element }) => {
                   )}
                 </Container>
               </Navbar>
-
+              <Card.Text className={classes.tagsDiv}>Tags: &nbsp;
+                {tags.map((tag) =>(
+                <p key={tag}>{tag} &nbsp;</p>
+                ))}
+              </Card.Text>
               <Card.Text>{description}</Card.Text>
               <div className="mb-2">
                 {image && <Image src={imagePreview} />}
@@ -337,8 +342,8 @@ const OpinionComponent = ({ element }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, imageFile, messageChanged) => {
-              ModifyOpinion(newDescription, imageFile, messageChanged);
+            onSend={(newDescription, imageFile, messageChanged,tagList) => {
+              ModifyOpinion(newDescription, imageFile, messageChanged,tagList);
             }}
             message={description}
             image={image}

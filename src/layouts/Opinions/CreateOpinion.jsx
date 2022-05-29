@@ -12,7 +12,7 @@ const CreateOpinion = () => {
   const [addDoc] = useCreateDocument();
   const [uploadImage] = useUploadImage();
 
-  const send = async (description, imageFile, messageChanged) => {
+  const send = async (description, imageFile, messageChanged,tagList) => {
     if (messageChanged) {
       const opinionRef = doc(collection(db, "opinions"));
 
@@ -28,6 +28,7 @@ const CreateOpinion = () => {
         parent: null,
         publishedDate: new Date(),
         image: imagePath,
+        tags: tagList
       };
       await addDoc("opinions", "Opinión", opinion, opinionRef);
       if (imageFile) {

@@ -36,3 +36,7 @@
   height: auto;
   resize: none;
 }
+
+.tagsDiv{
+  display: flex;
+}
