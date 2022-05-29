@@ -44,10 +44,15 @@ const OpinionsView = (props) => {
   const opinionsQueryOptions = useMemo(() => {
     switch (opinionsType) {
       case "home":
-        return [collection(db, "opinions"), orderBy("publishedDate", "desc")];
+        return [
+          collection(db, "opinions"),
+          where("parent", "==", null),
+          orderBy("publishedDate", "desc"),
+        ];
       case "explore":
         return [
           collection(db, "opinions"),
+          where("parent", "==", null),
           orderBy("publishedDate", "desc"),
           limit(pageSize),
         ];
@@ -55,8 +60,16 @@ const OpinionsView = (props) => {
         return [
           collection(db, "opinions"),
           where("userId", "==", params.userId),
+          where("parent", "==", null),
           orderBy("publishedDate", "desc"),
           limit(pageSize),
+        ];
+      case "comments":
+        return [
+          collection(db, "opinions"),
+          where("parent", "==", params.parentId),
+          orderBy("publishedDate", "desc"),
+          limit(5),
         ];
       default:
         return null;

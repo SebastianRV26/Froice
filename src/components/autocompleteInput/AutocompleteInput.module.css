@@ -1,6 +1,7 @@
 .AutocompleteInputContainer {
-  width: 200px;
+  width: fit-content;
   height: 50px;
+  z-index: 5;
 }
 
 .wrapper {

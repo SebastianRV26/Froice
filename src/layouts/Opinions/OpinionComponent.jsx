@@ -8,7 +8,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import classes from "./OpinionComponent.module.css";
-import userImg from "../../assets/icons/user.png";
+import defUserImg from "../../assets/icons/user.png";
 import CustomModal from "../../components/modals/CustomModal/CustomModal";
 import NewOpinion from "../../components/opinion/NewOpinion/NewOpinion";
 import useModify from "../../hooks/use-modify";
@@ -16,7 +16,13 @@ import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/modals/ConfirmationModal/ConfirmationModal";
 import useAuth from "../../hooks/use-auth";
 import useUploadImage from "../../hooks/use-upload-image";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase.config";
 import { getDownloadURL, ref } from "firebase/storage";
 import useDeleteImage from "../../hooks/use-delete-image";
@@ -26,7 +32,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
-  let { id, name, publishedDate, description, userId, image, location } = element;
+  
+  let { id, name, publishedDate, description, userId, image,location, urls, userPhoto } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
@@ -49,6 +56,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
   const isOpinionFromCurrentUser = currentUserId === userId;
   const userData = useSelector((state) => state.user.userData);
 
+  const [descriptionToShow, setDescriptionToShow] = useState([]);
+
   useEffect(() => {
     const fetchImageUrl = async (path) => {
       const imageUrl = await getDownloadURL(ref(storage, path));
@@ -64,11 +73,41 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     setModal((prevModalShow) => !prevModalShow);
   };
 
-  const Comment = () => {
-    changeModal(setCommentModalShow);
+  const Comment = async (description, imageFile, messageChanged) => {
+    if (messageChanged) {
+      const opinionRef = doc(collection(db, "opinions"));
+
+      const name = authData.user.displayName;
+      const userId = authData.user.uid;
+      const imagePath = imageFile ? `opinions/${opinionRef.id}.jpg` : null;
+      const opinion = {
+        name,
+        userId,
+        description,
+        likes: [],
+        dislikes: [],
+        parent: element.id,
+        publishedDate: new Date(),
+        image: imagePath,
+      };
+      await addDoc("opinions", "Opinión", opinion, opinionRef);
+      if (imageFile) {
+        const resizedImage = await resizeImage({
+          file: imageFile,
+          maxSize: 1500,
+        });
+        await uploadImage(imagePath, resizedImage);
+      }
+      setCommentModalShow(false);
+    }
   };
 
-  const ModifyOpinion = async (newDescription, imageFile, messageChanged) => {
+  const ModifyOpinion = async (
+    newDescription,
+    imageFile,
+    messageChanged,
+    urls
+  ) => {
     if (messageChanged) {
       const imagePath = `opinions/${id}.jpg`;
       let opinion = {
@@ -196,6 +235,25 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     Promise.all(promises).finally(() => setVoteLoading(false));
   };
 
+  useEffect(() => {
+    const words = description.split(" ");
+    let j = 0;
+    for (let i in words) {
+      const word = words[i];
+      if (word.includes("@")) {
+        words[i] = (
+          <a key={i} href={`${urls[j]}`} rel="noreferrer" target="_blank">
+            {word}
+          </a>
+        );
+        j++;
+      } else {
+        words[i] = <p key={i}>{word}</p>;
+      }
+    }
+    setDescriptionToShow(words);
+  }, []);
+
   return (
     <>
       <div className={classes.opinionContainer}>
@@ -230,7 +288,7 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
         <div className="ps-4">
           <div>
             <Image
-              src={userImg}
+              src={userPhoto ? userPhoto : defUserImg}
               width="42"
               height="42"
               roundedCircle
@@ -241,7 +299,7 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
             <div className="d-inline-block align-middle mx-2">
               <Link
                 className="fw-bold"
-                to={`/dashboard/opinions/${currentUserId}`}
+                to={`/dashboard/opinions/users/${currentUserId}`}
               >
                 {name}
               </Link>
@@ -270,7 +328,9 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
             )}
           </div>
           <div className="my-3">
-            {description}
+            <div className={classes.descriptionContainer}>
+              {descriptionToShow}
+            </div>
             {image && (
               <div className={classes.opinionImage}>
                 <Image fluid src={imagePreview} />
@@ -283,6 +343,13 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
               onClick={changeModal.bind(null, setCommentModalShow)}
             >
               Comentar
+            </Button>
+            <Button
+              as={Link}
+              to={`/dashboard/opinions/comments/${element.id}`}
+              variant="primary"
+            >
+              Ver comentarios
             </Button>
             <DropdownButton
               className={classes.options}
@@ -346,8 +413,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, imageFile, messageChanged) => {
-              ModifyOpinion(newDescription, imageFile, messageChanged);
+            onSend={(newDescription, imageFile, messageChanged, urls) => {
+              ModifyOpinion(newDescription, imageFile, messageChanged, urls);
             }}
             message={description}
             image={image}

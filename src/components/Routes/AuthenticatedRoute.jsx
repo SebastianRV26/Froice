@@ -23,6 +23,7 @@ const AuthenticatedRoute = ({ component: RouteComponent, requieredRole }) => {
       // Sino cumple con los requisitos llevarlo a la home page
       <Navigate to="/dashboard" replace={true} />;
     } else {
+      console.log("first")
       return <Navigate to="/registerConfirmation" replace={true} />;
     }
   }

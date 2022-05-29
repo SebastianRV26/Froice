@@ -1,41 +1,62 @@
-import React, { useState,useRef } from "react";
-import { Button, Card, Image } from "react-bootstrap";
+import React, { useState, useRef } from "react";
+import { Button, Card, Form, Image } from "react-bootstrap";
 import classes from "./NewOpinion.module.css";
-import user from "../../../assets/icons/user.png";
+import defUserImg from "../../../assets/icons/user.png";
 import ImageInput from "../../../ui/ImageInput";
 import { MdSend } from "react-icons/md";
 import AutocompleteInput from "../../../components/autocompleteInput/AutocompleteInput";
-
+import CustomModal from "../../modals/CustomModal/CustomModal";
+import { AiOutlineUser, AiOutlineLink } from "react-icons/ai";
+import { useSelector } from "react-redux";
 
 const NewOpinion = (props) => {
   const ref = useRef();
-  const [value, setValue] = useState({formatted_address:''});
-  const [message, setMessage] = useState(props.message);
+  const [value, setValue] = useState({ formatted_address: "" });
+  const [message, setMessage] = useState(props.message ? props.message : "");
   const [imagePreview] = useState(props.imagePreview);
   const [imageFile, setImageFile] = useState(props.image); //useState(isModify ? product.image : "");
+  const [urlPeopeModalShow, setUrlPeopeModalShow] = useState(false);
+  const [name, setName] = useState("");
+  const [url, setUrl] = useState("");
+  const [urls, setUrls] = useState([]);
 
+  const userData = useSelector((state) => state.user.userData);
   const notInModal = props.message === undefined;
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
 
   const send = (message) => {
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-    
-    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address??'');
-    setValue({formatted_address:''});
+    setValue({ formatted_address: "" });
     console.log(ref.current.value);
-    ref.current.value = '';
+    ref.current.value = "";
     console.log(ref.current.value);
+    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address ?? "", urls);
+    setUrls([]);
+    setMessage("");
   };
 
-  
+  const changeModal = (setModal) => {
+    setModal((prevModalShow) => !prevModalShow);
+  };
 
+  const addUrl = () => {
+    setMessage((prev) => `${prev}@${name}`);
+    setUrls((prev) => [...prev, url]);
+    setName("");
+    setUrl("");
+    changeModal(setUrlPeopeModalShow);
+  };
 
   return (
     <Card className={notInModal && classes.myrow}>
       <Card.Body>
         <div className={classes.container}>
-          <Image src={user} roundedCircle className={classes.image} />
+          <Image
+            src={userData?.photoURL ? userData.photoURL : defUserImg}
+            roundedCircle
+            className={classes.image}
+          />
           <textarea
             placeholder={hint}
             value={message}
@@ -44,14 +65,16 @@ const NewOpinion = (props) => {
           />
         </div>
         <div>
-
-
-
           <div className={`${classes.image} my-2`}>
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
-
-          <AutocompleteInput ref={ref} value={value} setValue={setValue}/>
+          
+          <div className={classes.buttonsContainer}>
+            <AutocompleteInput ref={ref} value={value} setValue={setValue} />
+            <Button className={classes.tagButton} onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
+              @
+            </Button>
+          </div>
 
           <Button
             onClick={() => {
@@ -64,6 +87,54 @@ const NewOpinion = (props) => {
           </Button>
         </div>
       </Card.Body>
+
+      {/*Commet Modal */}
+      {urlPeopeModalShow && (
+        <CustomModal
+          show={urlPeopeModalShow}
+          title="Agregar enlace a usuario"
+          message=""
+          myButtonTitle="Agregar"
+          onConfirm={addUrl}
+          onHide={() => changeModal(setUrlPeopeModalShow)}
+        >
+          <Form onSubmit={changeModal}>
+            <Form.Group className="py-2">
+              <span className="p-2 input-icon">
+                <AiOutlineUser />
+              </span>
+              <Form.Control
+                className="input-spacing"
+                type="text"
+                placeholder="Nombre del usuario"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Ingrese un usuario válido.
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="py-2">
+              <span className="p-2 input-icon">
+                <AiOutlineLink />
+              </span>
+              <Form.Control
+                className="input-spacing"
+                type="text"
+                placeholder="Url del usuario"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Ingrese un usuario válido.
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form>
+        </CustomModal>
+      )}
     </Card>
   );
 };

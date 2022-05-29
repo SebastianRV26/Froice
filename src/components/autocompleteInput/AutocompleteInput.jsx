@@ -14,7 +14,6 @@ const AutocompleteInput = React.forwardRef((props, ref) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          width: "400px",
         }}
       >
         <FontAwesomeIcon
