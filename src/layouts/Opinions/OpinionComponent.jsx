@@ -33,7 +33,18 @@ import { useSelector } from "react-redux";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
   
-  let { id, name, publishedDate, description, userId, image,location, urls, userPhoto } = element;
+  let {
+    id,
+    name,
+    publishedDate,
+    description,
+    userId,
+    image,
+    location,
+    urls,
+    userPhoto,
+    tags,
+  } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
@@ -106,13 +117,15 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     newDescription,
     imageFile,
     messageChanged,
-    urls
+    urls,
+    newTagList
   ) => {
     if (messageChanged) {
       const imagePath = `opinions/${id}.jpg`;
       let opinion = {
         ...element,
         description: newDescription,
+        tags: newTagList,
         image: imageFile ? imagePath : null,
       };
       await modifyOpinion(
@@ -241,8 +254,14 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     for (let i in words) {
       const word = words[i];
       if (word.includes("@")) {
+        let url;
+        if (!urls[j].startsWith("https://") && !urls[j].startsWith("http://")) {
+          url = "https://" + urls[j];
+        } else {
+          url = urls[j];
+        }
         words[i] = (
-          <a key={i} href={`${urls[j]}`} rel="noreferrer" target="_blank">
+          <a key={i} href={`${url}`} rel="noreferrer" target="_blank">
             {word}
           </a>
         );
@@ -307,7 +326,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
               <span>
                 {getFriendlyTime(
                   publishedDate?.toDate ? publishedDate.toDate() : publishedDate
-                )} {location !== ''?(` - ${location}`):''}
+                )}{" "}
+                {location !== "" ? ` - ${location}` : ""}
               </span>
             </div>
             {!isOpinionFromCurrentUser && userData && (
@@ -335,6 +355,9 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
               <div className={classes.opinionImage}>
                 <Image fluid src={imagePreview} />
               </div>
+            )}
+            {tags?.length > 0 && (
+              <div className="mt-2">Tags: {tags.join(", ")}</div>
             )}
           </div>
           <div className={classes.actionButtons}>
@@ -413,8 +436,20 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, imageFile, messageChanged, urls) => {
-              ModifyOpinion(newDescription, imageFile, messageChanged, urls);
+            onSend={(
+              newDescription,
+              imageFile,
+              messageChanged,
+              urls,
+              tagList
+            ) => {
+              ModifyOpinion(
+                newDescription,
+                imageFile,
+                messageChanged,
+                urls,
+                tagList
+              );
             }}
             message={description}
             image={image}

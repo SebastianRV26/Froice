@@ -14,7 +14,7 @@ const CreateOpinion = (props) => {
   const [uploadImage] = useUploadImage();
   const userData = useSelector((state) => state.user.userData);
 
-  const send = async (description, imageFile, messageChanged,location, urls) => {
+  const send = async (description, imageFile, messageChanged,location, urls,tagList) => {
     if (messageChanged) {
       const opinionRef = doc(collection(db, "opinions"));
 
@@ -24,7 +24,7 @@ const CreateOpinion = (props) => {
       const opinion = {
         name,
         userId,
-        userPhoto: userData?.photoURL,
+        userPhoto: userData?.photoURL ? userData.photoURL : null,
         description,
         likes: [],
         dislikes: [],
@@ -33,6 +33,7 @@ const CreateOpinion = (props) => {
         image: imagePath,
         location:location ,
         urls:urls??null,
+        tags: tagList,
       };
       await addDoc("opinions", "Opinión", opinion, opinionRef);
       if (imageFile) {

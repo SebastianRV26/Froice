@@ -22,7 +22,7 @@ exports.signUp = functions.https.onCall(async (data) => {
       email: email,
       name: data.firstName + " " + data.lastName,
       phoneNumber: "+506" + data.phone,
-      photoURL: user.photoURL??'',
+      photoURL: user.photoURL ? user.photoURL : null,
     };
     await admin.firestore().collection("users").doc(user.uid).set(userData);
   } catch (error) {
@@ -37,7 +37,7 @@ exports.createUser = functions.auth.user().onCreate(async (user) => {
     email: user.email,
     name: user.displayName,
     phoneNumber: user.phoneNumber,
-    photoURL: user.photoURL,
+    photoURL: user.photoURL ? user.photoURL : null,
   };
   const claimsPromise = admin.auth().setCustomUserClaims(user.uid, {
     role: "user",
