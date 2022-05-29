@@ -24,7 +24,7 @@ const CreateOpinion = (props) => {
       const opinion = {
         name,
         userId,
-        userPhoto: userData?.photoURL,
+        userPhoto: userData?.photoURL ? userData.photoURL : null,
         description,
         likes: [],
         dislikes: [],
