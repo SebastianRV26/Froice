@@ -252,8 +252,14 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     for (let i in words) {
       const word = words[i];
       if (word.includes("@")) {
+        let url;
+        if (!urls[j].startsWith("https://") && !urls[j].startsWith("http://")) {
+          url = "https://" + urls[j];
+        } else {
+          url = urls[j];
+        }
         words[i] = (
-          <a key={i} href={`${urls[j]}`} rel="noreferrer" target="_blank">
+          <a key={i} href={`${url}`} rel="noreferrer" target="_blank">
             {word}
           </a>
         );
