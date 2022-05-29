@@ -100,7 +100,8 @@ const OpinionsView = (props) => {
       results = results.filter(
         (data) =>
           data.userId === currentUserId ||
-          userData?.following?.includes(data.userId)
+          userData?.following?.includes(data.userId) ||
+          userData?.userTags?.some((r) => data?.tags?.includes(r))
       );
       setOpinions(results.slice(0, pageSize));
       setAllOpinions(results.slice(pageSize));

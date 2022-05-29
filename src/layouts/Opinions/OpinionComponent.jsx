@@ -32,8 +32,17 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
-  let { id, name, publishedDate, description, userId, image, urls, userPhoto } =
-    element;
+  let {
+    id,
+    name,
+    publishedDate,
+    description,
+    userId,
+    image,
+    urls,
+    userPhoto,
+    tags,
+  } = element;
 
   const [likes, setLikes] = useState(element.likes);
   const [dislikes, setDislikes] = useState(element.dislikes);
@@ -106,13 +115,15 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     newDescription,
     imageFile,
     messageChanged,
-    urls
+    urls,
+    newTagList
   ) => {
     if (messageChanged) {
       const imagePath = `opinions/${id}.jpg`;
       let opinion = {
         ...element,
         description: newDescription,
+        tags: newTagList,
         image: imageFile ? imagePath : null,
       };
       await modifyOpinion(
@@ -336,6 +347,9 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
                 <Image fluid src={imagePreview} />
               </div>
             )}
+            {tags?.length > 0 && (
+              <div className="mt-2">Tags: {tags.join(", ")}</div>
+            )}
           </div>
           <div className={classes.actionButtons}>
             <Button
@@ -413,8 +427,20 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
           onHide={() => changeModal(setModifyModalShow)}
         >
           <NewOpinion
-            onSend={(newDescription, imageFile, messageChanged, urls) => {
-              ModifyOpinion(newDescription, imageFile, messageChanged, urls);
+            onSend={(
+              newDescription,
+              imageFile,
+              messageChanged,
+              urls,
+              tagList
+            ) => {
+              ModifyOpinion(
+                newDescription,
+                imageFile,
+                messageChanged,
+                urls,
+                tagList
+              );
             }}
             message={description}
             image={image}

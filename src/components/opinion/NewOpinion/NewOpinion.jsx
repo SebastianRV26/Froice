@@ -8,6 +8,8 @@ import AutocompleteInput from "../../../components/autocompleteInput/Autocomplet
 import CustomModal from "../../modals/CustomModal/CustomModal";
 import { AiOutlineUser, AiOutlineLink } from "react-icons/ai";
 import { useSelector } from "react-redux";
+import Tags from "../../Tags/Tags";
+import { tags } from "../../../utils/tags";
 
 const NewOpinion = (props) => {
   const [message, setMessage] = useState(props.message ? props.message : "");
@@ -17,15 +19,30 @@ const NewOpinion = (props) => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [urls, setUrls] = useState([]);
+  const [showtags, setShowTags] = useState(false);
+  const [taglist, setTagList] = useState(tags);
+  const [lista, setLista] = useState([]);
 
   const userData = useSelector((state) => state.user.userData);
   const notInModal = props.message === undefined;
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
 
+  const addTag = (name) => {
+    setLista((lista) => (lista.includes(name) ? lista : lista.concat(name)));
+  };
+
   const send = (message) => {
+    setShowTags(false);
+    setLista([]);
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-    props.onSend(message, imageFile, descriptionChanged || imageChanged, urls);
+    props.onSend(
+      message,
+      imageFile,
+      descriptionChanged || imageChanged,
+      urls,
+      lista
+    );
     setUrls([]);
     setMessage("");
   };
@@ -49,7 +66,8 @@ const NewOpinion = (props) => {
           <Image
             src={userData?.photoURL ? userData.photoURL : defUserImg}
             roundedCircle
-            className={classes.image}
+            width="76"
+            height="76"
           />
           <textarea
             placeholder={hint}
@@ -63,12 +81,30 @@ const NewOpinion = (props) => {
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
 
-          <div className={classes.buttonsContainer}>
+          <div className={`${classes.buttonsContainer} mt-4`}>
             <AutocompleteInput />
             <Button onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
               @
             </Button>
           </div>
+
+          {showtags && (
+            <div className="my-3">
+              {taglist.map((tag) => (
+                <Tags
+                  key={tag}
+                  name={tag}
+                  onChange={(checked) => {
+                    if (checked) {
+                      addTag(tag);
+                    } else {
+                      setLista((list) => list.filter((el) => el !== tag));
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          )}
 
           <Button
             onClick={() => {
@@ -79,6 +115,17 @@ const NewOpinion = (props) => {
           >
             <MdSend />
           </Button>
+          {notInModal && (
+            <Button
+              onClick={() => {
+                setShowTags(true);
+              }}
+              variant="primary"
+              className={classes.send}
+            >
+              Agregar Tags
+            </Button>
+          )}
         </div>
       </Card.Body>
 
