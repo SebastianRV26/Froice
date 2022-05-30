@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const { arrayLeftOuterJoin, generateKey } = require("./utils");
 
 admin.initializeApp();
 
@@ -21,6 +22,7 @@ exports.signUp = functions.https.onCall(async (data) => {
       email: email,
       name: data.firstName + " " + data.lastName,
       phoneNumber: "+506" + data.phone,
+      photoURL: user.photoURL ? user.photoURL : null,
     };
     await admin.firestore().collection("users").doc(user.uid).set(userData);
   } catch (error) {
@@ -35,6 +37,7 @@ exports.createUser = functions.auth.user().onCreate(async (user) => {
     email: user.email,
     name: user.displayName,
     phoneNumber: user.phoneNumber,
+    photoURL: user.photoURL ? user.photoURL : null,
   };
   const claimsPromise = admin.auth().setCustomUserClaims(user.uid, {
     role: "user",
@@ -66,4 +69,71 @@ exports.deleteUser = functions.firestore
   .document("users/{userID}")
   .onDelete((snap, context) => {
     return admin.auth().deleteUser(snap.id);
+  });
+
+exports.onFollow = functions.firestore
+  .document("users/{userID}")
+  .onUpdate((change, context) => {
+    const newFollowing = change.after.data().following;
+    const previousFollowing = change.before.data().following;
+
+    // Se quieren solo los nuevos followers que se han agregado a la lista
+    // Para eso se puede hacer algo como un left outer join de ambas listas
+    const following = arrayLeftOuterJoin(previousFollowing, newFollowing);
+    const promises = [];
+    for (let follow of following) {
+      promises.push(
+        admin
+          .firestore()
+          .collection("users")
+          .doc(follow)
+          .collection("notifications")
+          .doc(generateKey(change.after.id + context.eventId))
+          .set({
+            userId: change.after.id,
+            name: change.after.data().name,
+            action: "following",
+            date: new Date(),
+          })
+      );
+    }
+    return Promise.all(promises);
+  });
+
+exports.onOpinionCreated = functions.firestore
+  .document("opinions/{opinionId}")
+  .onCreate((snap, context) => {
+    const newComment = snap.data();
+    if (!newComment.parent) {
+      return null;
+    }
+
+    const parentCommentRef = admin
+      .firestore()
+      .collection("opinions")
+      .doc(newComment.parent);
+    return admin.firestore().runTransaction(async (transaction) => {
+      const parentCommentDoc = await transaction.get(parentCommentRef);
+      if (parentCommentDoc.empty) {
+        return null;
+      }
+
+      // Ignore the notification if it's the same user
+      if (newComment.userId === parentCommentDoc.data().userId) {
+        return null;
+      }
+
+      return admin
+        .firestore()
+        .collection("users")
+        .doc(parentCommentDoc.data().userId)
+        .collection("notifications")
+        .doc(generateKey(newComment.userId + context.eventId))
+        .set({
+          userId: newComment.userId,
+          name: newComment.name,
+          action: "comment",
+          date: new Date(),
+        });
+    });
   });

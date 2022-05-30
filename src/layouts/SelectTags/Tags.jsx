@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import data from "./data.json";
+import { tags as data } from "../../utils/tags";
 
 const Tags = ({ onCandSend, onSetNames, groupsOf }) => {
   const [currentChecks, setCurrentChecks] = useState(0);
@@ -41,7 +41,7 @@ const Tags = ({ onCandSend, onSetNames, groupsOf }) => {
     return newList;
   };
 
-  const dataTags = makeSubGroups(data.tags, 5);
+  const dataTags = makeSubGroups(data, 5);
   useEffect(() => {
     onCandSend(currentChecks >= groupsOf);
   }, [currentChecks]);

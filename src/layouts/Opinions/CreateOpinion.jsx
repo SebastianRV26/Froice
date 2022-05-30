@@ -6,13 +6,16 @@ import useAuth from "../../hooks/use-auth";
 import useCreateDocument from "../../hooks/use-create-document";
 import useUploadImage from "../../hooks/use-upload-image";
 import { resizeImage } from "../../utils/utils";
+import { useSelector } from "react-redux";
 
 const CreateOpinion = (props) => {
   const authData = useAuth();
   const [addDoc] = useCreateDocument();
   const [uploadImage] = useUploadImage();
+  const userData = useSelector((state) => state.user.userData);
 
-  const send = async (description, imageFile, messageChanged, anonimus) => {
+
+  const send = async (description, imageFile, messageChanged, anonimus,location, urls,tagList) => {
     if (messageChanged) {
       const opinionRef = doc(collection(db, "opinions"));
 
@@ -22,11 +25,16 @@ const CreateOpinion = (props) => {
       const opinion = {
         name,
         userId,
+        userPhoto: userData?.photoURL ? userData.photoURL : null,
         description,
         likes: [],
         dislikes: [],
+        parent: null,
         publishedDate: new Date(),
         image: imagePath,
+        location:location ,
+        urls:urls??null,
+        tags: tagList,
       };
       await addDoc("opinions", "Opinión", opinion, opinionRef);
       if (imageFile) {

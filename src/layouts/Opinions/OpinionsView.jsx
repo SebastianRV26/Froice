@@ -10,6 +10,7 @@ import WithoutData from "../../ui/WithoutData";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
   collection,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -20,7 +21,7 @@ import {
 import { db } from "../../firebase/firebase.config";
 import OpinionComponent from "./OpinionComponent";
 import { Spinner } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./OpinionsView.module.css";
 import { useSelector } from "react-redux";
 import useAuth from "../../hooks/use-auth";
@@ -41,13 +42,20 @@ const OpinionsView = (props) => {
   let lastDoc = useRef();
   let isLoading = useRef(false);
 
+  const navigate = useNavigate();
+
   const opinionsQueryOptions = useMemo(() => {
     switch (opinionsType) {
       case "home":
-        return [collection(db, "opinions"), orderBy("publishedDate", "desc")];
+        return [
+          collection(db, "opinions"),
+          where("parent", "==", null),
+          orderBy("publishedDate", "desc"),
+        ];
       case "explore":
         return [
           collection(db, "opinions"),
+          where("parent", "==", null),
           orderBy("publishedDate", "desc"),
           limit(pageSize),
         ];
@@ -55,8 +63,16 @@ const OpinionsView = (props) => {
         return [
           collection(db, "opinions"),
           where("userId", "==", params.userId),
+          where("parent", "==", null),
           orderBy("publishedDate", "desc"),
           limit(pageSize),
+        ];
+      case "comments":
+        return [
+          collection(db, "opinions"),
+          where("parent", "==", params.parentId),
+          orderBy("publishedDate", "desc"),
+          limit(5),
         ];
       default:
         return null;
@@ -84,7 +100,8 @@ const OpinionsView = (props) => {
       results = results.filter(
         (data) =>
           data.userId === currentUserId ||
-          userData?.following?.includes(data.userId)
+          userData?.following?.includes(data.userId) ||
+          userData?.userTags?.some((r) => data?.tags?.includes(r))
       );
       setOpinions(results.slice(0, pageSize));
       setAllOpinions(results.slice(pageSize));
@@ -147,6 +164,14 @@ const OpinionsView = (props) => {
       }
     }, 300);
   }, [allOpinions]);
+
+  useEffect(() => {
+    if (userData) {
+      if (!userData?.userTags) {
+        navigate("/tags");
+      }
+    }
+  }, [userData]);
 
   return (
     <div className={`py-3 ${classes.container}`}>

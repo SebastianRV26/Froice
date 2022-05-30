@@ -1,0 +1,26 @@
+.notificationsBoxContainer {
+  display: flex;
+  width: 200px;
+  height: 400px;
+  overflow: auto;
+  flex-direction: column;
+  border: solid black 1px;
+  border-radius: 5px;
+  justify-content: start;
+  align-items: center;
+  background-color: white;
+}
+
+.notificationLine {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  color: black;
+  height: 50px;
+}
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-top: 2px solid rgba(0, 0, 0, 0.3);
+}
