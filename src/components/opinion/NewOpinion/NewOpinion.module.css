@@ -31,5 +31,15 @@
 
 .buttonsContainer {
   display: flex;
-  gap: 32px;
+  flex-direction: row;
+  justify-content: 'start';
+  gap: 16px;
+}
+
+.tagButton{
+  height:32px;
+  width:32px;
+  align-items: center;
+  text-align: center;
+  padding: 0 0 !important;
 }

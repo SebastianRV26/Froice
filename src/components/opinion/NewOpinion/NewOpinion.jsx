@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Card, Form, Image } from "react-bootstrap";
 import classes from "./NewOpinion.module.css";
 import defUserImg from "../../../assets/icons/user.png";
@@ -12,6 +12,8 @@ import Tags from "../../Tags/Tags";
 import { tags } from "../../../utils/tags";
 
 const NewOpinion = (props) => {
+  const ref = useRef();
+  const [value, setValue] = useState({ formatted_address: "" });
   const [message, setMessage] = useState(props.message ? props.message : "");
   const [imagePreview] = useState(props.imagePreview);
   const [imageFile, setImageFile] = useState(props.image); //useState(isModify ? product.image : "");
@@ -36,13 +38,11 @@ const NewOpinion = (props) => {
     setLista([]);
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-    props.onSend(
-      message,
-      imageFile,
-      descriptionChanged || imageChanged,
-      urls,
-      lista
-    );
+    setValue({ formatted_address: "" });
+    console.log(ref.current.value);
+    ref.current.value = "";
+    console.log(ref.current.value);
+    props.onSend(message, imageFile, descriptionChanged || imageChanged,value.formatted_address ?? "", urls,lista);
     setUrls([]);
     setMessage("");
   };
@@ -80,10 +80,10 @@ const NewOpinion = (props) => {
           <div className={`${classes.image} my-2`}>
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
-
-          <div className={`${classes.buttonsContainer} mt-4`}>
-            <AutocompleteInput />
-            <Button onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
+          
+          <div className={classes.buttonsContainer}>
+            <AutocompleteInput ref={ref} value={value} setValue={setValue} />
+            <Button className={classes.tagButton} onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
               @
             </Button>
           </div>

@@ -1,6 +1,7 @@
 .AutocompleteInputContainer {
-  width: 200px;
+  width: fit-content;
   height: 50px;
+  z-index: 5;
 }
 
 .wrapper {
@@ -71,4 +72,9 @@
 
 .suggestions li:not(:last-of-type) {
   border-bottom: 1px solid #999;
+}
+
+.AutocompleteInput{
+  display:flex;
+  width: 200px;
 }

@@ -1,7 +1,7 @@
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./layouts/Login/Login";
-import AdminPage from "./layouts/Admin/AdminView";
+import AdminPage from "./layouts/admin/AdminView";
 import Landpage from "./layouts/Landpage/Landpage";
 import Register from "./layouts/Register/Register";
 import RegisterConfirmation from "./layouts/RegisterConfirmation/RegisterConfirmation";
@@ -63,7 +63,7 @@ function App() {
         />
         <Route
           path="/registerConfirmation"
-          element={<UnauthenticatedRoute component={RegisterConfirmation} />}
+          element={<AuthenticatedRoute requieredRole={"both"} component={RegisterConfirmation} />}
         />
         <Route
           path="/forgot"

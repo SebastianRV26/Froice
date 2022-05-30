@@ -32,6 +32,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const OpinionComponent = ({ element, onModify, onDelete }) => {
+  
   let {
     id,
     name,
@@ -39,6 +40,7 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
     description,
     userId,
     image,
+    location,
     urls,
     userPhoto,
     tags,
@@ -326,7 +328,8 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
               <span>
                 {getFriendlyTime(
                   publishedDate?.toDate ? publishedDate.toDate() : publishedDate
-                )}
+                )}{" "}
+                {location !== "" ? ` - ${location}` : ""}
               </span>
             </div>
             {!isOpinionFromCurrentUser && userData && (
