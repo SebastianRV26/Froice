@@ -12,14 +12,10 @@ import {
   validateCapitalLetter,
   validateLowercaseLetter,
 } from "../../utils/Matchers";
-import {
-  updateEmail,
-  updateProfile,
-  getAuth,
-  updatePassword,
-} from "firebase/auth";
+import { getAuth, updatePassword } from "firebase/auth";
+import useModify from "../../hooks/use-modify";
 
-const FormEditUser = ({onSubmit}) => {
+const FormEditUser = ({ onSubmit }) => {
   return (
     <div className={classes.Container}>
       <div className={classes.title}>
@@ -27,30 +23,25 @@ const FormEditUser = ({onSubmit}) => {
         <div className={classes.hl} />
       </div>
       <form className={classes.panel} onSubmit={onSubmit}>
-  
-          <div className="users-form-label">
-            <label className={classes.label}>Nombre</label>
-          </div>
-          <input className={classes.input} placeholder="Nombre" />
-          <div className="users-form-label">
-            <label className={classes.label}>Email</label>
-          </div>
-          <input
-            className={classes.input}
-            placeholder="Email"
-          />
-          <div className="users-form-label">
-            <label className={classes.label}>Teléfono</label>
-          </div>
-          <input
-            className={classes.input}
-            //{...register("phoneNumber", {required: "The phone is required",})}
-            placeholder="Teléfono"
-          />
-          <Button className={classes.button} type="submit">
-            Guardar cambios
-          </Button>
-        
+        <div className="users-form-label">
+          <label className={classes.label}>Nombre</label>
+        </div>
+        <input className={classes.input} placeholder="Nombre" />
+        <div className="users-form-label">
+          <label className={classes.label}>Email</label>
+        </div>
+        <input className={classes.input} placeholder="Email" />
+        <div className="users-form-label">
+          <label className={classes.label}>Teléfono</label>
+        </div>
+        <input
+          className={classes.input}
+          //{...register("phoneNumber", {required: "The phone is required",})}
+          placeholder="Teléfono"
+        />
+        <Button className={classes.button} type="submit">
+          Guardar cambios
+        </Button>
       </form>
     </div>
   );
@@ -133,6 +124,7 @@ const EditUser = () => {
   const auth = getAuth();
   const [deleteHook, loading] = useDelete();
   const [deleteModal, setDeleteModal] = useState(false);
+  const [modifyUser] = useModify();
   //const [state, dispatch] = useReducer(UsersReducer, [], init); //el reducer, initial state, jalar datos de una API o localstorage
 
   let User = {
@@ -154,9 +146,21 @@ const EditUser = () => {
     }
   };
 
-  const UpdateU = (values) => {
+  const UpdateU = (event) => {
+    event.preventDefault();
     try {
-      let uptade = {
+      modifyUser(
+        "users",
+        auth.currentUser.uid,
+        {
+          name: event.target[0].value,
+          email: event.target[1].value,
+          phoneNumber: event.target[2].value,
+        },
+        "Usuario editado",
+        "Error al editar usuario"
+      );
+      /*let uptade = {
         displayName: values.name,
       };
       updateProfile(auth.currentUser, uptade);
@@ -168,17 +172,19 @@ const EditUser = () => {
         payload: {
           values,
         },
-      };
+      };*/
     } catch (error) {
-      throw error;
+      console.log(error);
+      //throw error;
     }
   };
 
-  const ChangePassword = (values) => {
-    if (values.newPassword === values.confPassword) {
-      updatePassword(auth.currentUser, values.newPassword);
+  const ChangePassword = (event) => {
+    event.preventDefault();
+    if (event.target[1].value === event.target[2].value) {
+      updatePassword(auth.currentUser, event.target[1].value);
       console.log("Cambios realizados con exito");
-    } else console.log("Las contraseñas no coiciden");
+    } else console.log("Las contraseñas no coinciden");
   };
 
   const deleteUser = () => {

@@ -1,5 +1,8 @@
 exports.arrayLeftOuterJoin = (array1, array2) => {
   if (!array1) {
+    if (!array2) {
+      return [];
+    }
     return array2;
   }
   if (!array2) {
