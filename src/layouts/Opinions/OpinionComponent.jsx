@@ -97,7 +97,9 @@ const OpinionComponent = ({ element, onModify, onDelete }) => {
         dislikes: [],
         parent: element.id,
         publishedDate: new Date(),
+        userPhoto: userData?.photoURL ? userData.photoURL : null,
         image: imagePath,
+        urls,
       };
       await addDoc("opinions", "Opinión", opinion, opinionRef);
       if (imageFile) {
