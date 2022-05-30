@@ -43,7 +43,15 @@ const NewOpinion = (props) => {
     console.log(ref.current.value);
     ref.current.value = "";
     console.log(ref.current.value);
-    props.onSend(message, imageFile, descriptionChanged || imageChanged, anonimus,value.formatted_address ?? "", urls,lista);
+    props.onSend(
+      message,
+      imageFile,
+      descriptionChanged || imageChanged,
+      anonimus,
+      value.formatted_address ?? "",
+      urls,
+      lista
+    );
     setUrls([]);
     setMessage("");
   };
@@ -81,10 +89,13 @@ const NewOpinion = (props) => {
           <div className={`${classes.image} my-2`}>
             <ImageInput url={imagePreview} onFileChange={setImageFile} />
           </div>
-          
+
           <div className={classes.buttonsContainer}>
             <AutocompleteInput ref={ref} value={value} setValue={setValue} />
-            <Button className={classes.tagButton} onClick={changeModal.bind(null, setUrlPeopeModalShow)}>
+            <Button
+              className={classes.tagButton}
+              onClick={changeModal.bind(null, setUrlPeopeModalShow)}
+            >
               @
             </Button>
           </div>
@@ -128,10 +139,18 @@ const NewOpinion = (props) => {
             </Button>
           )}
         </div>
-        <div className='custom-control'>
-      <label className="switch"><input type="checkbox" onChange={() => {setAnonimus(!anonimus)}}/><span className="slider round"></span></label>
-      <label className='custom-control-label' >Anonimo</label>
-      </div>
+        <div className={classes.switch_container}>
+        <label className={classes.switch}>
+          <input
+            type="checkbox"
+            onChange={() => {
+              setAnonimus(!anonimus);
+            }}
+          />
+          <span className={`${classes.slider} ${classes.round}`}></span>
+        </label>
+        <label className="custom-control-label">Anonimo</label>
+        </div>
       </Card.Body>
 
       {/*Commet Modal */}

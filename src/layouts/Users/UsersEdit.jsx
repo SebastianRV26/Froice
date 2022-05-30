@@ -6,11 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase.config";
 import useDelete from "../../hooks/use-delete";
 import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
-import {
-  faLock,
-  faCheck,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLock, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   validateCapitalLetter,
@@ -23,9 +19,7 @@ import {
   updatePassword,
 } from "firebase/auth";
 
-const FormEditUser = ({ onSubmit, defaultValues }) => {
-  //  const { register, handleSubmit } = useForm({ defaultValues });
-
+const FormEditUser = ({onSubmit}) => {
   return (
     <div className={classes.Container}>
       <div className={classes.title}>
@@ -33,41 +27,30 @@ const FormEditUser = ({ onSubmit, defaultValues }) => {
         <div className={classes.hl} />
       </div>
       <form className={classes.panel} onSubmit={onSubmit}>
-        <div className={classes.form}>
+  
           <div className="users-form-label">
             <label className={classes.label}>Nombre</label>
           </div>
-          <div>
-            <input
-              className={classes.input}
-              //{...register("name", { required: "The name is required" })}
-              placeholder="Nombre"
-            />
-          </div>
+          <input className={classes.input} placeholder="Nombre" />
           <div className="users-form-label">
             <label className={classes.label}>Email</label>
           </div>
-          <div>
-            <input
-              className={classes.input}
-              //{...register("email", { required: "The email is required" })}
-              placeholder="Email"
-            />
-          </div>
+          <input
+            className={classes.input}
+            placeholder="Email"
+          />
           <div className="users-form-label">
             <label className={classes.label}>Teléfono</label>
           </div>
-          <div>
-            <input
-              className={classes.input}
-              //{...register("phoneNumber", {required: "The phone is required",})}
-              placeholder="Teléfono"
-            />
-          </div>
+          <input
+            className={classes.input}
+            //{...register("phoneNumber", {required: "The phone is required",})}
+            placeholder="Teléfono"
+          />
           <Button className={classes.button} type="submit">
             Guardar cambios
           </Button>
-        </div>
+        
       </form>
     </div>
   );
@@ -109,26 +92,16 @@ const FormChPassw = ({ onSubmit }) => {
         <div className="users-form-label">
           <label className={classes.label}>Contraseña actual</label>
         </div>
-        <div>
-          <input
-            className={classes.input}
-            //{...register("password", {required: "The phone is required",})}
-            placeholder="Contraseña actual"
-          />
-        </div>
+        <input className={classes.input} placeholder="Contraseña actual" />
         <div className="users-form-label">
           <label className={classes.label}>Nueva contraseña</label>
         </div>
-        <div>
-          <input
-            onChange={passwordInputOnChange}
-            ref={passwordRef}
-            faIcon={faLock}
-            className={classes.input}
-            //{...register("newPassword", {required: "The password is required",})}
-            placeholder="Nueva contraseña"
-          />
-        </div>
+        <input
+          onChange={passwordInputOnChange}
+          ref={passwordRef}
+          className={classes.input}
+          placeholder="Nueva contraseña"
+        />
         <div className={classes.conditionsBox}>
           <div className={classes.inlineForm}>
             <FontAwesomeIcon icon={icon1} />{" "}
@@ -142,14 +115,12 @@ const FormChPassw = ({ onSubmit }) => {
             <FontAwesomeIcon icon={icon3} /> <p>Tamaño de 8 caracteres o más</p>
           </div>
         </div>
-        <div>
-          <label className={classes.label}>Confirmar contraseña</label>
-          <input
-            className={classes.input}
-            //{...register("confPassword", {required: "The password is required",})}
-            placeholder="Confirmar contraseña"
-          />
-        </div>
+        <label className={classes.label}>Confirmar contraseña</label>
+        <input
+          className={classes.input}
+          //{...register("confPassword", {required: "The password is required",})}
+          placeholder="Confirmar contraseña"
+        />
         <Button className={classes.button} type="submit">
           Guardar cambios
         </Button>
@@ -210,17 +181,16 @@ const EditUser = () => {
     } else console.log("Las contraseñas no coiciden");
   };
 
-  const deleteUser = () =>{
-      deleteHook(
-        "users",
-        auth.currentUser.uid,
-        "Se eliminó el usuario correctamente",
-        "Error al eliminar el usuario"
-      ).then(() => {
-        setDeleteModal((prevDeleteModal) => !prevDeleteModal);
-      });
- 
-  }
+  const deleteUser = () => {
+    deleteHook(
+      "users",
+      auth.currentUser.uid,
+      "Se eliminó el usuario correctamente",
+      "Error al eliminar el usuario"
+    ).then(() => {
+      setDeleteModal((prevDeleteModal) => !prevDeleteModal);
+    });
+  };
   const openDeleteHandler = () => {
     setDeleteModal(true);
   };
@@ -232,7 +202,9 @@ const EditUser = () => {
     <div>
       <FormEditUser onSubmit={UpdateU} defaultValues={User} />
       <FormChPassw onSubmit={ChangePassword} />
-      <Button className={classes.button} onClick={openDeleteHandler}>Eliminar cuenta</Button>
+      <Button className={classes.button} onClick={openDeleteHandler}>
+        Eliminar cuenta
+      </Button>
       {deleteModal && (
         <ConfirmationModal
           show={deleteModal}
