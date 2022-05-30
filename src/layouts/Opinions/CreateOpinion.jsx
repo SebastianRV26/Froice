@@ -12,12 +12,12 @@ const CreateOpinion = (props) => {
   const [addDoc] = useCreateDocument();
   const [uploadImage] = useUploadImage();
 
-  const send = async (description, imageFile, messageChanged) => {
+  const send = async (description, imageFile, messageChanged, anonimus) => {
     if (messageChanged) {
       const opinionRef = doc(collection(db, "opinions"));
 
-      const name = authData.user.displayName;
-      const userId = authData.user.uid;
+      const name =  anonimus ? "Anonimo": authData.user.displayName;
+      const userId =  anonimus ? "Anonimo": authData.user.uid;
       const imagePath = imageFile ? `opinions/${opinionRef.id}.jpg` : null;
       const opinion = {
         name,

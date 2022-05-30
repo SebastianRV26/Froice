@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-//import { useForm } from "react-hook-form";
+import { collection } from "firebase/firestore";
 import { Button } from "react-bootstrap";
 import classes from "./UsersEdit.module.css";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase.config";
+import useDelete from "../../hooks/use-delete";
+import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 import {
   faLock,
   faCheck,
@@ -158,6 +160,8 @@ const FormChPassw = ({ onSubmit }) => {
 
 const EditUser = () => {
   const auth = getAuth();
+  const [deleteHook, loading] = useDelete();
+  const [deleteModal, setDeleteModal] = useState(false);
   //const [state, dispatch] = useReducer(UsersReducer, [], init); //el reducer, initial state, jalar datos de una API o localstorage
 
   let User = {
@@ -206,6 +210,20 @@ const EditUser = () => {
     } else console.log("Las contraseñas no coiciden");
   };
 
+  const deleteUser = () =>{
+      deleteHook(
+        "users",
+        auth.currentUser.uid,
+        "Se eliminó el usuario correctamente",
+        "Error al eliminar el usuario"
+      ).then(() => {
+        setDeleteModal((prevDeleteModal) => !prevDeleteModal);
+      });
+ 
+  }
+  const openDeleteHandler = () => {
+    setDeleteModal(true);
+  };
   useEffect(() => {
     // localStorage.setItem("user", JSON.stringify(state)); //Key, string
   }, []);
@@ -214,6 +232,17 @@ const EditUser = () => {
     <div>
       <FormEditUser onSubmit={UpdateU} defaultValues={User} />
       <FormChPassw onSubmit={ChangePassword} />
+      <Button className={classes.button} onClick={openDeleteHandler}>Eliminar cuenta</Button>
+      {deleteModal && (
+        <ConfirmationModal
+          show={deleteModal}
+          title="Eliminar cuenta"
+          description="Esta acción es permanente ¿está seguro de que desea eliminar su cuenta? "
+          onConfirm={deleteUser}
+          onHide={setDeleteModal.bind(this, false)}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

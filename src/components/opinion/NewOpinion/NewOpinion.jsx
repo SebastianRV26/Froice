@@ -11,6 +11,7 @@ const NewOpinion = (props) => {
   const [message, setMessage] = useState(props.message);
   const [imagePreview] = useState(props.imagePreview);
   const [imageFile, setImageFile] = useState(props.image); //useState(isModify ? product.image : "");
+  const [anonimus, setAnonimus] = useState(false);
 
   const notInModal = props.message === undefined;
   const hint = notInModal ? "Realizar nueva queja" : "Realizar comentario";
@@ -18,7 +19,7 @@ const NewOpinion = (props) => {
   const send = (message) => {
     const descriptionChanged = message !== "" && message !== props.message;
     const imageChanged = imageFile !== props.image;
-    props.onSend(message, imageFile, descriptionChanged || imageChanged);
+    props.onSend(message, imageFile, descriptionChanged || imageChanged, anonimus);
   };
 
   return (
@@ -53,6 +54,10 @@ const NewOpinion = (props) => {
             <MdSend />
           </Button>
         </div>
+        <div className='custom-control'>
+      <label className="switch"><input type="checkbox" onChange={() => {setAnonimus(!anonimus)}}/><span className="slider round"></span></label>
+      <label className='custom-control-label' >Anonimo</label>
+      </div>
       </Card.Body>
     </Card>
   );
